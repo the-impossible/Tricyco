@@ -1,6 +1,9 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:tricycle/utils/constant.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:tricycle/views/signIn.dart';
+import '../components/delegatedText.dart';
 
 class Splash extends StatelessWidget {
   const Splash({super.key});
@@ -8,17 +11,29 @@ class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
+      child: AnimatedSplashScreen(
+        splashIconSize: 300,
+        centered: true,
+        duration: 1000,
+        splashTransition: SplashTransition.scaleTransition,
+        pageTransitionType: PageTransitionType.fade,
+        animationDuration: const Duration(
+          seconds: 1,
+        ),
+        nextScreen: const SignIn(),
         backgroundColor: Constants.primaryColor,
-        body: Column(
+        splash: Column(
           children: [
-            Image.asset("assets/tricycle.png"),
-            const Text(
-              'Tricyco',
-              style: TextStyle(
-                color: Constants.tertiaryColor,
-              ),
-            )
+            Image.asset(
+              "assets/tricycle.png",
+              width: 200,
+              height: 200,
+            ),
+            DelegatedText(
+              text: 'Tricyco',
+              fontSize: 30,
+              fontName: 'InterBold',
+            ),
           ],
         ),
       ),
