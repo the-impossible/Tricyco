@@ -71,16 +71,38 @@ class SignIn extends StatelessWidget {
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                        onPressed: () => Get.offNamed(Routes.signUp),
-                        style: ElevatedButton.styleFrom(
-                          primary: Constants.primaryColor,
-                        ),
-                        child: DelegatedText(
+                      onPressed: () => Get.offNamed(Routes.signUp),
+                      style: ElevatedButton.styleFrom(
+                        primary: Constants.primaryColor,
+                      ),
+                      child: DelegatedText(
+                        fontSize: 15,
+                        text: 'Sign In',
+                        color: Constants.secondaryColor,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 18.0, top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DelegatedText(
+                          text: "Don't have an account?",
                           fontSize: 15,
-                          text: 'Sign In',
-                          color: Constants.secondaryColor,
-                        )),
-                  )
+                          color: Constants.tertiaryColor,
+                        ),
+                        TextButton(
+                          onPressed: () => Get.offNamed(Routes.signUp),
+                          child: DelegatedText(
+                            text: "Sign up?",
+                            fontSize: 15,
+                            color: Constants.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),

@@ -21,5 +21,6 @@ final getPages = [
   GetPage(
     name: Routes.signUp,
     page: () => const SignUp(),
+    transition: Transition.leftToRight,
   ),
 ];

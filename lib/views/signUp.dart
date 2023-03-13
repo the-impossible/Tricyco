@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedForm.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/utils/constant.dart';
+
+import '../routes/routes.dart';
 
 class SignUp extends StatelessWidget {
   const SignUp({super.key});
@@ -65,7 +68,28 @@ class SignUp extends StatelessWidget {
                         color: Constants.secondaryColor,
                       ),
                     ),
-                  )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 18.0, top: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DelegatedText(
+                          text: "Already have an account?",
+                          fontSize: 15,
+                          color: Constants.tertiaryColor,
+                        ),
+                        TextButton(
+                          onPressed: () => Get.offNamed(Routes.signIn),
+                          child: DelegatedText(
+                            text: "Sign in",
+                            fontSize: 15,
+                            color: Constants.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
