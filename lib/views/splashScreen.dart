@@ -2,7 +2,7 @@ import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:tricycle/utils/constant.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:tricycle/views/signIn.dart';
+import 'package:tricycle/views/wrapper.dart';
 import '../components/delegatedText.dart';
 
 class Splash extends StatelessWidget {
@@ -20,7 +20,7 @@ class Splash extends StatelessWidget {
         animationDuration: const Duration(
           seconds: 1,
         ),
-        nextScreen: const SignIn(),
+        nextScreen: const Wrapper(),
         backgroundColor: Constants.primaryColor,
         splash: Column(
           children: [

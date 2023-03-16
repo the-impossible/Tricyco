@@ -3,12 +3,21 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedForm.dart';
 import 'package:tricycle/components/delegatedText.dart';
+import 'package:tricycle/controllers/loginController.dart';
+import 'package:tricycle/routes/routes.dart';
 import 'package:tricycle/utils/constant.dart';
 
-import '../routes/routes.dart';
+class SignIn extends StatefulWidget {
+  final Function onClicked;
 
-class SignUp extends StatelessWidget {
-  const SignUp({super.key});
+  const SignIn({required this.onClicked, super.key});
+
+  @override
+  State<SignIn> createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
+  LoginController loginController = Get.put(LoginController());
 
   @override
   Widget build(BuildContext context) {
@@ -25,40 +34,55 @@ class SignUp extends StatelessWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 15, bottom: 40),
+                    padding: const EdgeInsets.only(top: 15),
                     child: DelegatedText(
-                      text: 'Create new account',
+                      text: 'Sign in',
                       fontSize: 23,
                       color: Constants.primaryColor,
                       fontName: 'InterBold',
                     ),
                   ),
-                  const delegatedForm(
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0, bottom: 20),
+                    child: SvgPicture.asset(
+                      "assets/sign_In.svg",
+                      width: 200,
+                      height: 150,
+                    ),
+                  ),
+                  delegatedForm(
                     fieldName: 'Email',
                     icon: Icons.mail_rounded,
                     hintText: 'Enter your email',
+                    formController: loginController.emailController,
                   ),
-                  const delegatedForm(
+                  delegatedForm(
                     fieldName: 'Password',
                     icon: Icons.lock,
                     hintText: 'Enter your password',
+                    formController: loginController.passwordController,
                   ),
-                  const delegatedForm(
-                    fieldName: 'Full name',
-                    icon: Icons.person,
-                    hintText: 'Enter your full name',
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 18.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: DelegatedText(
+                            text: 'Forget password?',
+                            fontSize: 15,
+                            color: Constants.primaryColor,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                  const delegatedForm(
-                    fieldName: 'Mobile number',
-                    icon: Icons.call,
-                    hintText: 'Enter your number',
-                  ),
-                  const SizedBox(height: 40),
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => loginController.signIn(),
                       style: ElevatedButton.styleFrom(
                         primary: Constants.primaryColor,
                       ),
@@ -75,14 +99,16 @@ class SignUp extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         DelegatedText(
-                          text: "Already have an account?",
+                          text: "Don't have an account?",
                           fontSize: 15,
                           color: Constants.tertiaryColor,
                         ),
                         TextButton(
-                          onPressed: () => Get.offNamed(Routes.signIn),
+                          onPressed: () {
+                            widget.onClicked();
+                          },
                           child: DelegatedText(
-                            text: "Sign in",
+                            text: "Sign up?",
                             fontSize: 15,
                             color: Constants.primaryColor,
                           ),

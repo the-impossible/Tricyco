@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "133480460007",
+    "project_id": "tricyco-3f903",
+    "storage_bucket": "tricyco-3f903.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:133480460007:android:f775e8b71f836a15befc42",
+        "android_client_info": {
+          "package_name": "com.example.tricycle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "133480460007-9l57p7knee6joicbvglf456bfm4lourl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTfXrTAccZ2-X4u3ra-afqYiwYPjXtF3w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "133480460007-9l57p7knee6joicbvglf456bfm4lourl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
