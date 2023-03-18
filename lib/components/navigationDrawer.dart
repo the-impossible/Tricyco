@@ -101,12 +101,18 @@ Widget buildMenuItems(BuildContext context) => Container(
           ListTile(
             leading: const Icon(Icons.wallet),
             title: const Text('Wallet'),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Get.toNamed(Routes.wallet);
+            },
           ),
           ListTile(
               leading: const Icon(Icons.history),
               title: const Text('History'),
-              onTap: () {}),
+              onTap: () {
+                Navigator.pop(context);
+                Get.toNamed(Routes.history);
+              }),
           ListTile(
               leading: const Icon(Icons.person),
               title: const Text('Personal Details'),

@@ -7,6 +7,7 @@ import 'package:tricycle/views/home/history.dart';
 import 'package:tricycle/views/home/home.dart';
 import 'package:tricycle/views/home/kekeDetails.dart';
 import 'package:tricycle/views/home/userProfile.dart';
+import 'package:tricycle/views/home/wallet.dart';
 import 'package:tricycle/views/wrapper.dart';
 import '../views/splashScreen.dart';
 
@@ -21,6 +22,7 @@ class Routes {
   static String history = '/history';
   static String userProfile = '/userProfile';
   static String home = '/home';
+  static String wallet = '/wallet';
 }
 
 bool isLogin = true;
@@ -57,6 +59,10 @@ final getPages = [
   GetPage(
     name: Routes.home,
     page: () => HomePage(),
+  ),
+  GetPage(
+    name: Routes.wallet,
+    page: () => WalletPage(),
   ),
   // GetPage(
   //   name: Routes.signUp,
