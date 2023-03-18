@@ -25,7 +25,7 @@ class Wrapper extends StatelessWidget {
           );
         } else if (snapshot.hasData) {
           print('DATA DEY');
-          return const HomePage();
+          return HomePage();
         } else {
           print('DATA NO DEY');
           return const Authenticate();

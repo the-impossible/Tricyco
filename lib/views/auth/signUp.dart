@@ -93,7 +93,7 @@ class _SignUpState extends State<SignUp> {
                         ),
                         child: DelegatedText(
                           fontSize: 15,
-                          text: 'Sign In',
+                          text: 'Sign Up',
                           color: Constants.secondaryColor,
                         ),
                       ),
@@ -111,7 +111,6 @@ class _SignUpState extends State<SignUp> {
                           TextButton(
                             onPressed: () {
                               widget.onClicked();
-                              print("REST TO Sign in");
                             },
                             child: DelegatedText(
                               text: "Sign in",

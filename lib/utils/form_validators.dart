@@ -1,5 +1,4 @@
 class FormValidator {
-
   static String? validateName(String? value) {
     if (value == null || value.isEmpty) {
       return 'Full name is Required!';
@@ -7,7 +6,7 @@ class FormValidator {
     return null;
   }
 
- static  String? validatePassword(String? value) {
+  static String? validatePassword(String? value) {
     if (value == null || value.isEmpty) {
       return 'Password is Required!';
     } else if (value.length < 6) {
@@ -28,17 +27,25 @@ class FormValidator {
     return null;
   }
 
-   static String? validatePhone(String? value) {
+  static String? validatePhone(String? value) {
     if (value == null || value.isEmpty) {
       return 'Phone number is Required!';
-    }else if (value.length != 11) {
+    } else if (value.length != 11) {
       return 'Phone Number should be at exactly 11 characters!';
     }
     return null;
   }
-   static String? validateUserType(String? value) {
+
+  static String? validateUserType(String? value) {
     if (value == null || value.isEmpty) {
       return 'UserType is Required!';
+    }
+    return null;
+  }
+
+  static String? validateLocation(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Location is Required!';
     }
     return null;
   }
