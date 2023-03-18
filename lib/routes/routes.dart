@@ -4,6 +4,7 @@ import 'package:tricycle/views/auth/signUp.dart';
 import 'package:tricycle/views/home/bookingStatus.dart';
 import 'package:tricycle/views/home/decideRoute.dart';
 import 'package:tricycle/views/home/history.dart';
+import 'package:tricycle/views/home/home.dart';
 import 'package:tricycle/views/home/kekeDetails.dart';
 import 'package:tricycle/views/home/userProfile.dart';
 import 'package:tricycle/views/wrapper.dart';
@@ -19,6 +20,7 @@ class Routes {
   static String bookingStatus = '/bookingStatus';
   static String history = '/history';
   static String userProfile = '/userProfile';
+  static String home = '/home';
 }
 
 bool isLogin = true;
@@ -51,6 +53,10 @@ final getPages = [
   GetPage(
     name: Routes.userProfile,
     page: () => UserProfilePage(),
+  ),
+  GetPage(
+    name: Routes.home,
+    page: () => HomePage(),
   ),
   // GetPage(
   //   name: Routes.signUp,

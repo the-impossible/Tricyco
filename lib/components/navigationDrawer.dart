@@ -93,7 +93,10 @@ Widget buildMenuItems(BuildContext context) => Container(
           ListTile(
             leading: const Icon(Icons.home),
             title: const Text('Home'),
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+              Get.offNamed(Routes.home);
+            },
           ),
           ListTile(
             leading: const Icon(Icons.wallet),
@@ -101,17 +104,16 @@ Widget buildMenuItems(BuildContext context) => Container(
             onTap: () {},
           ),
           ListTile(
+              leading: const Icon(Icons.history),
+              title: const Text('History'),
+              onTap: () {}),
+          ListTile(
               leading: const Icon(Icons.person),
               title: const Text('Personal Details'),
               onTap: () {
                 Navigator.pop(context);
-
                 Get.toNamed(Routes.userProfile);
               }),
-          ListTile(
-              leading: const Icon(Icons.history),
-              title: const Text('History'),
-              onTap: () {}),
           const Divider(
             color: Colors.black54,
             thickness: 1,
