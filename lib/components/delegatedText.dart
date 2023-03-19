@@ -6,12 +6,14 @@ class DelegatedText extends StatelessWidget {
   final double fontSize;
   String? fontName = 'InterBold';
   Color? color = Constants.tertiaryColor;
+  TextAlign? align;
 
   DelegatedText({
     required this.text,
     required this.fontSize,
     this.fontName,
     this.color,
+    this.align,
     super.key,
   });
 
@@ -25,6 +27,7 @@ class DelegatedText extends StatelessWidget {
         letterSpacing: 1,
         fontFamily: fontName,
       ),
+      textAlign: align,
     );
   }
 }

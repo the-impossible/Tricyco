@@ -59,14 +59,14 @@ class HistoryPage extends StatelessWidget {
                       ),
                       color: Constants.primaryColor,
                       child: ListTile(
-                        leading: Image.asset("assets/tricycle.png"),
+                        leading: const Icon(Icons.history),
                         title: DelegatedText(
                           text:
                               "A ride from main gate to computer science dept",
-                          fontSize: 18,
+                          fontSize: 16,
                         ),
                         subtitle: DelegatedText(
-                            text: "Status: Pending", fontSize: 16),
+                            text: "Status: Pending", fontSize: 14),
                         trailing: const Icon(Icons.arrow_forward_ios_rounded),
                       ),
                     ),

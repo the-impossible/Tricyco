@@ -120,6 +120,20 @@ Widget buildMenuItems(BuildContext context) => Container(
                 Navigator.pop(context);
                 Get.toNamed(Routes.userProfile);
               }),
+          ListTile(
+              leading: const Icon(Icons.drive_eta),
+              title: const Text('Booking List'),
+              onTap: () {
+                Navigator.pop(context);
+                Get.toNamed(Routes.driverHomePage);
+              }),
+          ListTile(
+              leading: const Icon(Icons.drive_eta),
+              title: const Text('Driver Home Page'),
+              onTap: () {
+                Navigator.pop(context);
+                Get.toNamed(Routes.driverHomePage);
+              }),
           const Divider(
             color: Colors.black54,
             thickness: 1,
