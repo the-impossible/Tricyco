@@ -43,6 +43,13 @@ class FormValidator {
     return null;
   }
 
+  static String? validateBankNames(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'UserType is Required!';
+    }
+    return null;
+  }
+
   static String? validateLocation(String? value) {
     if (value == null || value.isEmpty) {
       return 'Location is Required!';

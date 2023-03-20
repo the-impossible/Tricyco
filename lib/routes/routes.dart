@@ -1,14 +1,15 @@
 import 'package:get/get.dart';
-import 'package:tricycle/views/auth/signIn.dart';
-import 'package:tricycle/views/auth/signUp.dart';
-import 'package:tricycle/views/home/bookingStatus.dart';
-import 'package:tricycle/views/home/decideRoute.dart';
+import 'package:tricycle/views/home/driver/BookingList.dart';
+import 'package:tricycle/views/home/driver/bookingStatus.dart';
 import 'package:tricycle/views/home/driver/driverHome.dart';
-import 'package:tricycle/views/home/history.dart';
-import 'package:tricycle/views/home/home.dart';
-import 'package:tricycle/views/home/kekeDetails.dart';
-import 'package:tricycle/views/home/userProfile.dart';
-import 'package:tricycle/views/home/wallet.dart';
+import 'package:tricycle/views/home/driver/wallet.dart';
+import 'package:tricycle/views/home/users/bookingStatus.dart';
+import 'package:tricycle/views/home/users/decideRoute.dart';
+import 'package:tricycle/views/home/users/history.dart';
+import 'package:tricycle/views/home/users/home.dart';
+import 'package:tricycle/views/home/users/kekeDetails.dart';
+import 'package:tricycle/views/home/users/userProfile.dart';
+import 'package:tricycle/views/home/users/wallet.dart';
 import 'package:tricycle/views/wrapper.dart';
 import '../views/splashScreen.dart';
 
@@ -24,7 +25,11 @@ class Routes {
   static String userProfile = '/userProfile';
   static String home = '/home';
   static String wallet = '/wallet';
+  // Driver Pages
   static String driverHomePage = '/driverHomePage';
+  static String bookingList = '/bookingList';
+  static String driverBookingStatus = '/driverBookingStatus';
+  static String driverWallet = '/driverWallet';
 }
 
 bool isLogin = true;
@@ -69,6 +74,18 @@ final getPages = [
   GetPage(
     name: Routes.driverHomePage,
     page: () => DriverHomePage(),
+  ),
+  GetPage(
+    name: Routes.bookingList,
+    page: () => const BookingList(),
+  ),
+  GetPage(
+    name: Routes.driverBookingStatus,
+    page: () => DriverBookingStatusPage(),
+  ),
+  GetPage(
+    name: Routes.driverWallet,
+    page: () => DriverWallet(),
   ),
   // GetPage(
   //   name: Routes.signUp,

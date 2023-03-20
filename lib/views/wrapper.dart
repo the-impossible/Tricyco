@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/views/auth/authenticate.dart';
 import 'package:tricycle/views/auth/signIn.dart';
-import 'package:tricycle/views/home/home.dart';
+import 'package:tricycle/views/home/users/home.dart';
 
 class Wrapper extends StatelessWidget {
   const Wrapper({super.key});

@@ -1,87 +1,149 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedText.dart';
-import 'package:tricycle/components/navigationDrawer.dart';
+import 'package:tricycle/routes/routes.dart';
 import 'package:tricycle/utils/constant.dart';
 
-class DriverHomePage extends StatelessWidget {
-  DriverHomePage({super.key});
+class BookingList extends StatelessWidget {
+  const BookingList({super.key});
 
-  final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SafeArea(
-      child: Scaffold(
-        key: scaffoldKey,
-        backgroundColor: Constants.secondaryColor,
-        drawer: const NavigationDrawer(),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              IconButton(
-                onPressed: () => scaffoldKey.currentState!.openDrawer(),
-                icon: const Icon(
-                  Icons.menu,
-                  size: 25,
-                ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          backgroundColor: Constants.secondaryColor,
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    InkWell(
-                      onTap: () {},
+                    IconButton(
+                      onPressed: () => Get.back(),
+                      icon: const Icon(
+                        Icons.arrow_back_ios_rounded,
+                        size: 25,
+                      ),
+                    ),
+                    const SizedBox(width: 60),
+                    DelegatedText(
+                      text: 'Booking List',
+                      fontSize: 25,
+                      fontName: 'InterBold',
+                    ),
+                  ],
+                ),
+                Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 20),
                       child: Container(
-                        height: 200,
-                        width: size.width * .42,
+                        height: size.height * .78,
+                        width: size.width * .89,
                         decoration: BoxDecoration(
                           color: Constants.primaryColor,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Icon(
-                              Icons.local_taxi,
-                              size: 60,
-                              color: Constants.secondaryColor,
+                      ),
+                    ),
+                    Positioned(
+                      top: 50,
+                      left: 25,
+                      child: Container(
+                        width: size.width * .8,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Constants.secondaryColor,
+                        ),
+                        child: TabBar(
+                          tabs: [
+                            DelegatedText(
+                              text: 'Requests',
+                              fontSize: 20,
+                              color: Constants.primaryColor,
                             ),
                             DelegatedText(
-                              text: '50 Ride \nCompleted',
-                              fontSize: 25,
-                              align: TextAlign.center,
-                              color: Constants.secondaryColor,
+                              text: 'Approved',
+                              fontSize: 20,
+                              color: Constants.primaryColor,
                             ),
                           ],
                         ),
                       ),
                     ),
-                    InkWell(
-                      onTap: () {},
-                      child: Container(
-                        height: 200,
-                        width: size.width * .42,
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 233, 179, 99),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    Positioned(
+                      top: 110,
+                      left: 28,
+                      child: SizedBox(
+                        width: size.width * .8,
+                        height: size.height * .65,
+                        child: TabBarView(
                           children: [
-                            const Icon(
-                              Icons.monetization_on_rounded,
-                              size: 60,
-                              color: Constants.secondaryColor,
+                            SingleChildScrollView(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: 14,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      Get.toNamed(Routes.driverBookingStatus);
+                                    },
+                                    child: Card(
+                                      margin: const EdgeInsets.only(top: 15),
+                                      color: Constants.secondaryColor,
+                                      child: ListTile(
+                                        title: DelegatedText(
+                                          text: "Passenger Name",
+                                          fontSize: 18,
+                                        ),
+                                        subtitle: DelegatedText(
+                                            text:
+                                                "Destination: Central Administration",
+                                            fontSize: 12),
+                                        trailing: const Icon(
+                                            Icons.arrow_forward_ios_rounded),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
-                            DelegatedText(
-                              text: 'N5000 \nEarnings',
-                              fontSize: 25,
-                              align: TextAlign.center,
-                              color: Constants.secondaryColor,
+                            SingleChildScrollView(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: 14,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      Get.toNamed(Routes.driverBookingStatus);
+                                    },
+                                    child: Card(
+                                      margin: const EdgeInsets.only(top: 15),
+                                      color: Constants.secondaryColor,
+                                      child: ListTile(
+                                        title: DelegatedText(
+                                          text: "Passenger Name",
+                                          fontSize: 18,
+                                        ),
+                                        subtitle: DelegatedText(
+                                            text:
+                                                "Destination: Central Administration",
+                                            fontSize: 12),
+                                        trailing: const Icon(
+                                            Icons.arrow_forward_ios_rounded),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ],
                         ),
@@ -89,58 +151,8 @@ class DriverHomePage extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: DelegatedText(
-                  text: 'New Booking Request',
-                  fontSize: 22,
-                  fontName: 'InterBold',
-                ),
-              ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 3,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () {},
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            elevation: 1,
-                            margin: const EdgeInsets.only(top: 15),
-                            color: Constants.primaryColor,
-                            child: ListTile(
-                              title: DelegatedText(
-                                text: "User Name",
-                                fontSize: 19,
-                                fontName: 'InterMed',
-                              ),
-                              subtitle: DelegatedText(
-                                  text: "Main Campus - Computer Science",
-                                  fontSize: 14),
-                              trailing: IconButton(
-                                onPressed: () {},
-                                color: Constants.secondaryColor,
-                                iconSize: 30,
-                                icon:
-                                    const Icon(Icons.arrow_forward_ios_rounded),
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

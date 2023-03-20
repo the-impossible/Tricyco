@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
+import 'package:tricycle/routes/routes.dart';
 import 'package:tricycle/utils/constant.dart';
 
 class DriverHomePage extends StatelessWidget {
@@ -34,7 +36,9 @@ class DriverHomePage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed(Routes.bookingList);
+                      },
                       child: Container(
                         height: 200,
                         width: size.width * .42,
@@ -61,7 +65,9 @@ class DriverHomePage extends StatelessWidget {
                       ),
                     ),
                     InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        Get.toNamed(Routes.driverWallet);
+                      },
                       child: Container(
                         height: 200,
                         width: size.width * .42,
@@ -108,7 +114,9 @@ class DriverHomePage extends StatelessWidget {
                       itemCount: 3,
                       itemBuilder: (context, index) {
                         return InkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Get.toNamed(Routes.driverBookingStatus);
+                          },
                           child: Card(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -125,12 +133,10 @@ class DriverHomePage extends StatelessWidget {
                               subtitle: DelegatedText(
                                   text: "Main Campus - Computer Science",
                                   fontSize: 14),
-                              trailing: IconButton(
-                                onPressed: () {},
+                              trailing: const Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 30,
                                 color: Constants.secondaryColor,
-                                iconSize: 30,
-                                icon:
-                                    const Icon(Icons.arrow_forward_ios_rounded),
                               ),
                             ),
                           ),

@@ -5,8 +5,8 @@ import 'package:tricycle/components/navigationDrawer.dart';
 import 'package:tricycle/routes/routes.dart';
 import 'package:tricycle/utils/constant.dart';
 
-class BookingStatusPage extends StatelessWidget {
-  BookingStatusPage({super.key});
+class DriverBookingStatusPage extends StatelessWidget {
+  DriverBookingStatusPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
@@ -24,8 +24,16 @@ class BookingStatusPage extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      IconButton(
+                        onPressed: () => Get.back(),
+                        icon: const Icon(
+                          Icons.arrow_back_ios,
+                          size: 25,
+                        ),
+                      ),
+                      const SizedBox(width: 30),
                       DelegatedText(
                         text: "Booking Status",
                         fontSize: 25,
@@ -65,7 +73,7 @@ class BookingStatusPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             DelegatedText(
-                              text: "Status.: ",
+                              text: "Status: ",
                               fontSize: 20,
                               fontName: 'InterBold',
                             ),
@@ -80,7 +88,7 @@ class BookingStatusPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             DelegatedText(
-                              text: "From.: ",
+                              text: "From: ",
                               fontSize: 20,
                               fontName: 'InterBold',
                             ),
@@ -95,7 +103,7 @@ class BookingStatusPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             DelegatedText(
-                              text: "To.: ",
+                              text: "To: ",
                               fontSize: 20,
                               fontName: 'InterBold',
                             ),
@@ -117,7 +125,7 @@ class BookingStatusPage extends StatelessWidget {
                           width: size.width,
                           height: 50,
                           child: ElevatedButton(
-                            onPressed: () => Get.offNamed(Routes.history),
+                            onPressed: () {},
                             style: ElevatedButton.styleFrom(
                               primary: Constants.primaryColor,
                               shape: RoundedRectangleBorder(
@@ -126,7 +134,7 @@ class BookingStatusPage extends StatelessWidget {
                             ),
                             child: DelegatedText(
                               fontSize: 20,
-                              text: 'View History',
+                              text: 'Approve',
                               color: Constants.secondaryColor,
                             ),
                           ),
@@ -143,4 +151,3 @@ class BookingStatusPage extends StatelessWidget {
     );
   }
 }
-

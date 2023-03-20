@@ -121,11 +121,11 @@ Widget buildMenuItems(BuildContext context) => Container(
                 Get.toNamed(Routes.userProfile);
               }),
           ListTile(
-              leading: const Icon(Icons.drive_eta),
+              leading: const Icon(Icons.list_rounded),
               title: const Text('Booking List'),
               onTap: () {
                 Navigator.pop(context);
-                Get.toNamed(Routes.driverHomePage);
+                Get.toNamed(Routes.bookingList);
               }),
           ListTile(
               leading: const Icon(Icons.drive_eta),
