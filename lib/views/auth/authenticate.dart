@@ -13,7 +13,6 @@ class _AuthenticateState extends State<Authenticate> {
   bool isLogin = true;
 
   void toggle() {
-    print("SSS: $isLogin");
     setState(() => isLogin = !isLogin);
   }
 

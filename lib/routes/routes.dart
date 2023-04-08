@@ -45,7 +45,7 @@ final getPages = [
   ),
   GetPage(
     name: Routes.wrapper,
-    page: () => const Wrapper(),
+    page: () => Wrapper(),
   ),
   GetPage(
     name: Routes.decideRoute,

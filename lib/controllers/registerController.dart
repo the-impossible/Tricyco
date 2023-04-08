@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedSnackBar.dart';
 import 'package:tricycle/routes/routes.dart';
+import 'package:tricycle/services/database.dart';
 import 'package:tricycle/views/wrapper.dart';
 
 class RegisterController extends GetxController {
@@ -16,6 +17,7 @@ class RegisterController extends GetxController {
   @override
   void dispose() {
     // TODO: implement dispose
+
     nameController.dispose();
     phoneController.dispose();
     emailController.dispose();
@@ -42,17 +44,22 @@ class RegisterController extends GetxController {
             email: emailController.text.trim(),
             password: passwordController.text.trim());
 
-        final docUser = FirebaseFirestore.instance.collection("users").doc();
+        // Create a new user
+        await DatabaseService(uid: user.user!.uid).createUserData(
+            nameController.text.trim(),
+            emailController.text.trim(),
+            phoneController.text.trim(),
+            userType!);
 
-        final json = {
-          'name': nameController.text.trim(),
-          'email': emailController.text.trim(),
-          'phone': phoneController.text.trim(),
-          'userType': userType,
-          'user_id': user.user!.uid,
-        };
+        if (userType! == "Driver") {
+          await DatabaseService(uid: user.user!.uid)
+              .updateTricycleData("", "Yellow");
+        }
 
-        await docUser.set(json);
+        nameController.clear();
+        phoneController.clear();
+        emailController.clear();
+        passwordController.clear();
 
         navigator!.pop(Get.context!);
 
