@@ -1,17 +1,64 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
 import 'package:tricycle/routes/routes.dart';
+import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/constant.dart';
+import 'package:tricycle/views/home/driver/updateTricyle.dart';
 
-class DriverHomePage extends StatelessWidget {
-  DriverHomePage({super.key});
+void showUpdateTricycle(BuildContext context) {
+  showModalBottomSheet(
+    isScrollControlled: true,
+    isDismissible: false,
+    context: context,
+    builder: (context) {
+      return Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: const UpdateTricycleForm(),
+        ),
+      );
+    },
+  );
+}
+
+class DriverHomePage extends StatefulWidget {
+  const DriverHomePage({super.key});
+
+  @override
+  State<DriverHomePage> createState() => _DriverHomePageState();
+}
+
+class _DriverHomePageState extends State<DriverHomePage> {
+  DatabaseService databaseService = Get.put(DatabaseService());
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  bool showUpdateTricycleBottomSheet = false;
+
+  @override
+  void initState() {
+    super.initState();
+    checkIfProfileUpdated();
+  }
+
+  Future<void> checkIfProfileUpdated() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final isProfileUpdated =
+        await DatabaseService().checkIfProfileUpdated(userId);
+    setState(() {
+      showUpdateTricycleBottomSheet = !isProfileUpdated;
+      if (showUpdateTricycleBottomSheet) showUpdateTricycle(context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,

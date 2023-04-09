@@ -10,12 +10,12 @@ class DatabaseService extends GetxController {
   UserData? userData;
 
   // collection reference
-  var usersCollection =
-      FirebaseFirestore.instance.collection("users");
+  var usersCollection = FirebaseFirestore.instance.collection("users");
 
   var tricycleCollection =
       FirebaseFirestore.instance.collection("tricycleData");
 
+  //Create user
   Future createUserData(
       String name, String email, String phone, String userType) async {
     return await usersCollection.doc(uid).set({
@@ -26,7 +26,8 @@ class DatabaseService extends GetxController {
     });
   }
 
-Future<String> getUserType(String uid) async {
+  //Determine userType
+  Future<String> getUserType(String uid) async {
     // Query database to get user type
     final snapshot = await usersCollection.doc(uid).get();
     // Return user type as string
@@ -37,6 +38,7 @@ Future<String> getUserType(String uid) async {
     return "";
   }
 
+  //Check if the driver profile is updated
   Future<bool> checkIfProfileUpdated(String uid) async {
     // Query database to check if user has updated profile
     final snapshot = await tricycleCollection.doc(uid).get();
@@ -48,13 +50,14 @@ Future<String> getUserType(String uid) async {
     return false;
   }
 
+  //Update tricycle data
+
   Future updateTricycleData(String plateNumber, String color) async {
     return await tricycleCollection.doc(uid).set({
       "plateNumber": plateNumber,
       "color": color,
     });
   }
-
 
   // Stream<DocumentSnapshot> get tricycleData {
   //   return tricycleCollection.doc(uid).snapshots();
