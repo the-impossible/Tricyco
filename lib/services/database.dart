@@ -45,18 +45,20 @@ class DatabaseService extends GetxController {
     // Return true or false
     if (snapshot.exists) {
       final data = TricycleData.fromJson(snapshot.data()!);
-      (data.plateNumber != "") ? true : false;
+      if (data.plateNumber != "") {
+        return true;
+      }
     }
     return false;
   }
 
   //Update tricycle data
-
-  Future updateTricycleData(String plateNumber, String color) async {
-    return await tricycleCollection.doc(uid).set({
+  Future<bool> updateTricycleData(String plateNumber, String color) async {
+    await tricycleCollection.doc(uid).update({
       "plateNumber": plateNumber,
       "color": color,
     });
+    return true;
   }
 
   // Stream<DocumentSnapshot> get tricycleData {

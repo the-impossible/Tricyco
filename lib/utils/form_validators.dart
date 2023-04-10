@@ -56,4 +56,18 @@ class FormValidator {
     }
     return null;
   }
+
+  static String? validatePlateNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Plate number is Required!';
+    }
+    return null;
+  }
+
+  static String? validateTricycleColor(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Tricycle color is Required!';
+    }
+    return null;
+  }
 }

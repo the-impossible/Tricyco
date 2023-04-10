@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedForm.dart';
 import 'package:tricycle/components/delegatedText.dart';
+import 'package:tricycle/controllers/tricycleDataController.dart';
 import 'package:tricycle/utils/constant.dart';
+import 'package:tricycle/utils/form_validators.dart';
 
 class UpdateTricycleForm extends StatefulWidget {
   const UpdateTricycleForm({super.key});
@@ -11,7 +14,10 @@ class UpdateTricycleForm extends StatefulWidget {
 }
 
 class _UpdateTricycleFormState extends State<UpdateTricycleForm> {
-  static final _formKey = GlobalKey<FormState>();
+  TricycleDataController tricycleDataController =
+      Get.put(TricycleDataController());
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,21 +31,28 @@ class _UpdateTricycleFormState extends State<UpdateTricycleForm> {
               padding: const EdgeInsets.only(top: 20.0),
               child: DelegatedText(text: "Update Tricycle", fontSize: 20),
             ),
-            const delegatedForm(
-                fieldName: "Plate Number",
-                icon: Icons.numbers,
-                hintText: "Enter plate Number"),
-            const delegatedForm(
-                fieldName: "Tricycle Color",
-                icon: Icons.numbers,
-                hintText: "Enter tricycle color"),
+            delegatedForm(
+              fieldName: "Plate Number",
+              icon: Icons.numbers,
+              hintText: "Enter plate Number",
+              validator: FormValidator.validatePlateNumber,
+              formController: tricycleDataController.plateNumberController,
+            ),
+            delegatedForm(
+              fieldName: "Tricycle Color",
+              icon: Icons.numbers,
+              hintText: "Enter tricycle color",
+              validator: FormValidator.validateTricycleColor,
+              formController: tricycleDataController.tricycleColorController,
+            ),
             SizedBox(
               width: size.width,
               child: ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Perform update operation
                     Navigator.of(context).pop();
+                    // Perform update operation
+                    tricycleDataController.updateTricycle();
                   }
                 },
                 style: ElevatedButton.styleFrom(

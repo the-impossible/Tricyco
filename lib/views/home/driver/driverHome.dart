@@ -11,7 +11,7 @@ import 'package:tricycle/views/home/driver/updateTricyle.dart';
 void showUpdateTricycle(BuildContext context) {
   showModalBottomSheet(
     isScrollControlled: true,
-    isDismissible: false,
+    // isDismissible: false,
     context: context,
     builder: (context) {
       return Padding(
@@ -58,7 +58,6 @@ class _DriverHomePageState extends State<DriverHomePage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
