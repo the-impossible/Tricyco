@@ -50,10 +50,13 @@ class RegisterController extends GetxController {
             {
               "plateNumber": "",
               "color": "Yellow",
+              "pass": 4,
+              "hasCompleted": true,
+              "status": true,
             },
           );
         }
-        
+
         nameController.clear();
         phoneController.clear();
         emailController.clear();

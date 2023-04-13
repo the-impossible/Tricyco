@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedText.dart';
+import 'package:tricycle/models/user_data.dart';
 import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/loading.dart';
 import 'package:tricycle/views/auth/authenticate.dart';
@@ -33,30 +34,29 @@ class _WrapperState extends State<Wrapper> {
             ),
           );
         } else if (snapshot.hasData) {
-          // check for the userType (userType == Driver)? (Driver.hasProfile)? DriverHomepage : UpdateProfile : Homepage
+          // check for the userType (userType == Driver)? DriverHomepage : Homepage
           final userId = FirebaseAuth.instance.currentUser!.uid;
           databaseService.uid = userId;
           return FutureBuilder(
-              future: databaseService.getUserType(userId),
-              builder: (context, AsyncSnapshot<String> userTypeSnapshot) {
-                if (userTypeSnapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return const Loading();
-                } else if (userTypeSnapshot.hasError) {
-                  return Center(
-                    child: DelegatedText(
-                      text: 'Something went wrong!',
-                      fontSize: 20,
-                    ),
-                  );
-                } else {
-                  String userType = userTypeSnapshot.data!;
-                  if (userType == 'Driver') {
-                    return const DriverHomePage();
-                  }
-                  return HomePage();
+            future: databaseService.getUser(userId),
+            builder: (context, AsyncSnapshot<UserData?> userData) {
+              if (userData.connectionState == ConnectionState.waiting) {
+                return const Loading();
+              } else if (userData.hasError) {
+                return Center(
+                  child: DelegatedText(
+                    text: 'Something went wrong!',
+                    fontSize: 20,
+                  ),
+                );
+              } else {
+                if (userData.data!.userType == 'Driver') {
+                  return const DriverHomePage();
                 }
-              });
+                return HomePage();
+              }
+            },
+          );
         } else {
           return const Authenticate();
         }

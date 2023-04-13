@@ -2,12 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
-import 'package:tricycle/routes/routes.dart';
+import 'package:tricycle/controllers/tricycleDetailsController.dart';
+import 'package:tricycle/models/tricycle_data.dart';
+import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/constant.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  DatabaseService databaseService = Get.put(DatabaseService());
+
+  TricycleDetailsController tricycleDetailsController =
+      Get.put(TricycleDetailsController());
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   getUserType();
+  // }
+
+  // String userType = "";
+
+  // Future<void> getUserType() async {
+  //   final userId = FirebaseAuth.instance.currentUser!.uid;
+  //   userData = await DatabaseService().getUser(userId);
+  //   setState(() {
+  //     userType = userData!.userType;
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -53,29 +83,57 @@ class HomePage extends StatelessWidget {
                     ),
                     Expanded(
                       child: SingleChildScrollView(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 14,
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () => Get.toNamed(Routes.kekeDetails),
-                              child: Card(
-                                margin: const EdgeInsets.only(top: 15),
-                                color: Constants.primaryColor,
-                                child: ListTile(
-                                  leading: Image.asset("assets/keke.jpeg"),
-                                  title: DelegatedText(
-                                    text: "Driver",
-                                    fontSize: 18,
-                                  ),
-                                  subtitle: DelegatedText(
-                                      text: "4 Seats", fontSize: 12),
-                                  trailing: const Icon(
-                                      Icons.arrow_forward_ios_rounded),
-                                ),
-                              ),
-                            );
+                        child: StreamBuilder<List<TricycleData>>(
+                          stream: databaseService.readTricycleData(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Text(
+                                  "Something went wrong! ${snapshot.error}");
+                            } else if (snapshot.hasData) {
+                              final tricycleDataList = snapshot.data!;
+                              if (tricycleDataList.isNotEmpty) {
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: tricycleDataList.length,
+                                  itemBuilder: (context, index) {
+                                    final tricycleData =
+                                        tricycleDataList[index];
+                                    return InkWell(
+                                      onTap: () => {
+                                        tricycleDetailsController.driverID =
+                                            tricycleData.id,
+                                        tricycleDetailsController
+                                            .getTricycleDetails()
+                                      },
+                                      child: Card(
+                                        margin: const EdgeInsets.only(top: 15),
+                                        color: Constants.primaryColor,
+                                        child: ListTile(
+                                          leading:
+                                              Image.asset("assets/keke.jpeg"),
+                                          title: DelegatedText(
+                                            text: tricycleData.plateNumber,
+                                            fontSize: 18,
+                                          ),
+                                          subtitle: DelegatedText(
+                                              text:
+                                                  "${tricycleData.pass} Seats left",
+                                              fontSize: 12),
+                                          trailing: const Icon(
+                                              Icons.arrow_forward_ios_rounded),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                              } else {
+                                return const Text("No available KEKE");
+                              }
+                            } else {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
                           },
                         ),
                       ),

@@ -1,14 +1,21 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tricycle/components/delegatedButton.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
+import 'package:tricycle/controllers/tricycleDetailsController.dart';
 import 'package:tricycle/routes/routes.dart';
+import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/constant.dart';
 
 class KekeDetailsPage extends StatelessWidget {
   KekeDetailsPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  TricycleDetailsController tricycleDetailsController =
+      Get.put(TricycleDetailsController());
+  DatabaseService databaseService = Get.put(DatabaseService());
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -77,7 +84,7 @@ class KekeDetailsPage extends StatelessWidget {
                         ),
                       ),
                       DelegatedText(
-                        text: "Driver Name",
+                        text: tricycleDetailsController.userData!.name,
                         fontSize: 20,
                         fontName: 'InterBold',
                       ),
@@ -92,7 +99,28 @@ class KekeDetailsPage extends StatelessWidget {
                               fontName: 'InterBold',
                             ),
                             DelegatedText(
-                              text: "ABC234GJ",
+                              text: tricycleDetailsController
+                                  .tricycleData!.plateNumber,
+                              fontSize: 20,
+                              fontName: 'InterBold',
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            DelegatedText(
+                              text: "Seat Left.: ",
+                              fontSize: 20,
+                              fontName: 'InterBold',
+                            ),
+                            const SizedBox(width: 20),
+                            DelegatedText(
+                              text: tricycleDetailsController.tricycleData!.pass
+                                  .toString(),
                               fontSize: 20,
                               fontName: 'InterBold',
                             ),
@@ -106,7 +134,14 @@ class KekeDetailsPage extends StatelessWidget {
                           width: size.width,
                           height: 50,
                           child: ElevatedButton(
-                            onPressed: () => Get.offNamed(Routes.decideRoute),
+                            onPressed: () {
+                              var data = {
+                                'driverID': tricycleDetailsController.driverID,
+                                'userID': FirebaseAuth.instance.currentUser!.uid
+                              };
+                              Get.offNamed(Routes.decideRoute,
+                                  parameters: data);
+                            },
                             style: ElevatedButton.styleFrom(
                               primary: Constants.primaryColor,
                               shape: RoundedRectangleBorder(

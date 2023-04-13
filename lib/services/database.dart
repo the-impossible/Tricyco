@@ -11,31 +11,33 @@ class DatabaseService extends GetxController {
 
   // collection reference
   var usersCollection = FirebaseFirestore.instance.collection("users");
-
+  var bookingCollection = FirebaseFirestore.instance.collection("BookingList");
   var tricycleCollection =
       FirebaseFirestore.instance.collection("tricycleData");
 
   //Create user
   Future createUserData(
       String name, String email, String phone, String userType) async {
-    return await usersCollection.doc(uid).set({
-      'name': name,
-      'email': email,
-      'phone': phone,
-      'userType': userType,
-    });
+    return await usersCollection.doc(uid).set(
+      {
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'userType': userType,
+      },
+    );
   }
 
   //Determine userType
-  Future<String> getUserType(String uid) async {
+  Future<UserData?> getUser(String uid) async {
     // Query database to get user type
     final snapshot = await usersCollection.doc(uid).get();
     // Return user type as string
     if (snapshot.exists) {
       userData = UserData.fromJson(snapshot.data()!);
-      return UserData.fromJson(snapshot.data()!).userType;
+      return UserData.fromJson(snapshot.data()!);
     }
-    return "";
+    return null;
   }
 
   //Check if the driver profile is updated
@@ -44,7 +46,7 @@ class DatabaseService extends GetxController {
     final snapshot = await tricycleCollection.doc(uid).get();
     // Return true or false
     if (snapshot.exists) {
-      final data = TricycleData.fromJson(snapshot.data()!);
+      final data = TricycleData.fromMap(snapshot.data()!, snapshot.id);
       if (data.plateNumber != "") {
         return true;
       }
@@ -61,9 +63,30 @@ class DatabaseService extends GetxController {
     return true;
   }
 
-  // Stream<DocumentSnapshot> get tricycleData {
-  //   return tricycleCollection.doc(uid).snapshots();
-  // }
+  Stream<List<TricycleData>> readTricycleData() {
+    return tricycleCollection
+        .where('status', isEqualTo: true)
+        .where("plateNumber", isNotEqualTo: "")
+        .snapshots()
+        .map((snapshot) =>
+            snapshot.docs.map((doc) => TricycleData.fromJson(doc)).toList());
+  }
+
+  Future<TricycleData?> getTricycleData(String driveID) async {
+    final snapshot = await tricycleCollection.doc(driveID).get();
+    if (snapshot.exists) {
+      return TricycleData.fromMap(snapshot.data()!, driveID);
+    }
+    return null;
+  }
+
+  Future<bool> bookTricycle(
+      String? userID, String? driverID, String to, String from) async {
+     await bookingCollection.doc(driverID).set(
+      {'userID': userID, 'to': to, 'from': from, 'status': false},
+    );
+    return true;
+  }
 
   // Stream<TricycleData> get tricycleData {
   //   return TricycleData.fromDocumentSnapshot(

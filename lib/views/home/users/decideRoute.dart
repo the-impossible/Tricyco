@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tricycle/components/delegatedButton.dart';
+import 'package:tricycle/components/delegatedSnackBar.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
+import 'package:tricycle/controllers/decideRoute.dart';
 import 'package:tricycle/routes/routes.dart';
 import 'package:tricycle/utils/constant.dart';
 import 'package:tricycle/utils/form_validators.dart';
 
 class DecideRoutePage extends StatelessWidget {
   DecideRoutePage({super.key});
+
+  DecideRouteController decideRouteController =
+      Get.put(DecideRouteController());
+
   final _formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    print(Get.parameters['userID']);
+    print(Get.parameters['driverID']);
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -111,32 +118,42 @@ class DecideRoutePage extends StatelessWidget {
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: const Text('Payment Info'),
-                                        content: const Text(
-                                            'An amount of N100.00 will be charged from your wallet'),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: const Text('Cancel'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                              Get.offNamed(
-                                                  Routes.bookingStatus);
-                                            },
-                                            child: const Text('Proceed'),
-                                          ),
-                                        ],
-                                      );
-                                    },
+                                if (decideRouteController.from !=
+                                    decideRouteController.to) {
+                                  if (_formKey.currentState!.validate()) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: const Text('Payment Info'),
+                                          content: const Text(
+                                              'An amount of N100.00 will be charged from your wallet'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: const Text('Cancel'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                decideRouteController
+                                                    .bookTricycle();
+                                              },
+                                              child: const Text('Proceed'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                } else {
+                                  ScaffoldMessenger.of(Get.context!)
+                                      .showSnackBar(
+                                    delegatedSnackBar(
+                                        "Current location and destination location can't be the same",
+                                        false),
                                   );
                                 }
                               },
@@ -183,6 +200,9 @@ class FromDropdownMenu extends StatefulWidget {
 }
 
 class _FromDropdownMenuState extends State<FromDropdownMenu> {
+  DecideRouteController decideRouteController =
+      Get.put(DecideRouteController());
+
   @override
   Widget build(BuildContext context) {
     String? location;
@@ -205,6 +225,7 @@ class _FromDropdownMenuState extends State<FromDropdownMenu> {
       onChanged: (String? newValue) {
         setState(() {
           location = newValue!;
+          decideRouteController.from = newValue;
         });
       },
       items: locations
@@ -227,6 +248,9 @@ class ToDropdownMenu extends StatefulWidget {
 }
 
 class _ToDropdownMenuState extends State<ToDropdownMenu> {
+  DecideRouteController decideRouteController =
+      Get.put(DecideRouteController());
+
   @override
   Widget build(BuildContext context) {
     String? location;
@@ -249,6 +273,7 @@ class _ToDropdownMenuState extends State<ToDropdownMenu> {
       onChanged: (String? newValue) {
         setState(() {
           location = newValue!;
+          decideRouteController.to = newValue;
         });
       },
       items: locations
