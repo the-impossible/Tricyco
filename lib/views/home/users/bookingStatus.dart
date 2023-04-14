@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
+import 'package:tricycle/controllers/bookingStatusController.dart';
 import 'package:tricycle/routes/routes.dart';
+import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/constant.dart';
+import 'package:tricycle/models/bookingList_data.dart';
 
 class BookingStatusPage extends StatelessWidget {
   BookingStatusPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  DatabaseService databaseService = Get.put(DatabaseService());
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -60,86 +65,109 @@ class BookingStatusPage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 20),
-                    child: Wrap(
-                      alignment: WrapAlignment.center,
-                      runSpacing: 20,
-                      children: [
-                        Image.asset(
-                          'assets/keke.jpeg',
-                          width: 200,
-                          height: 200,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            DelegatedText(
-                              text: "Status.: ",
-                              fontSize: 20,
-                              fontName: 'InterBold',
-                            ),
-                            DelegatedText(
-                              text: "Pending",
-                              fontSize: 18,
-                              fontName: 'InterBold',
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            DelegatedText(
-                              text: "From.: ",
-                              fontSize: 20,
-                              fontName: 'InterBold',
-                            ),
-                            DelegatedText(
-                              text: "Central Admin",
-                              fontSize: 18,
-                              fontName: 'InterBold',
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            DelegatedText(
-                              text: "To.: ",
-                              fontSize: 20,
-                              fontName: 'InterBold',
-                            ),
-                            DelegatedText(
-                              text: "Computer Science",
-                              fontSize: 18,
-                              fontName: 'InterBold',
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 50),
-                        DelegatedText(
-                          fontSize: 17,
-                          text: 'Your ride will start soon',
-                          color: Constants.tertiaryColor,
-                        ),
-                        const SizedBox(height: 30),
-                        SizedBox(
-                          width: size.width,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () => Get.offNamed(Routes.history),
-                            style: ElevatedButton.styleFrom(
-                              primary: Constants.primaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                    child: StreamBuilder<BookingList?>(
+                      stream: databaseService
+                          .getBookingStatus(Get.parameters['docRef']),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(
+                              "Something went wrong! ${snapshot.error}");
+                        } else if (snapshot.hasData) {
+                          print("object: ${Get.parameters['docRef']}");
+                          return Wrap(
+                            alignment: WrapAlignment.center,
+                            runSpacing: 20,
+                            children: [
+                              Image.asset(
+                                'assets/keke.png',
+                                width: 200,
+                                height: 200,
                               ),
-                            ),
-                            child: DelegatedText(
-                              fontSize: 20,
-                              text: 'View History',
-                              color: Constants.secondaryColor,
-                            ),
-                          ),
-                        ),
-                      ],
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  DelegatedText(
+                                    text: "Status.: ",
+                                    fontSize: 20,
+                                    fontName: 'InterBold',
+                                  ),
+                                  DelegatedText(
+                                    text: (snapshot.data!.status)
+                                        ? "Approved"
+                                        : "Pending",
+                                    fontSize: 18,
+                                    fontName: 'InterBold',
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  DelegatedText(
+                                    text: "From.: ",
+                                    fontSize: 20,
+                                    fontName: 'InterBold',
+                                  ),
+                                  DelegatedText(
+                                    text: snapshot.data!.from,
+                                    fontSize: 18,
+                                    fontName: 'InterBold',
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  DelegatedText(
+                                    text: "To.: ",
+                                    fontSize: 20,
+                                    fontName: 'InterBold',
+                                  ),
+                                  DelegatedText(
+                                    text: snapshot.data!.to,
+                                    fontSize: 18,
+                                    fontName: 'InterBold',
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 50),
+                              DelegatedText(
+                                fontSize: 17,
+                                text: (snapshot.data!.status)
+                                    ? "Your ride will start soon"
+                                    : "Your ride is pending approval",
+                                color: Constants.tertiaryColor,
+                              ),
+                              const SizedBox(height: 30),
+                              SizedBox(
+                                width: size.width,
+                                height: 50,
+                                child: ElevatedButton(
+                                  onPressed: () => Get.offNamed(Routes.history),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Constants.primaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  child: DelegatedText(
+                                    fontSize: 20,
+                                    text: 'View History',
+                                    color: Constants.secondaryColor,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
                     ),
                   ),
                 )

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:tricycle/models/bookingList_data.dart';
 import 'package:tricycle/models/tricycle_data.dart';
 import 'package:tricycle/models/user_data.dart';
 
@@ -80,13 +81,42 @@ class DatabaseService extends GetxController {
     return null;
   }
 
-  Future<bool> bookTricycle(
+  Future<String> bookTricycle(
       String? userID, String? driverID, String to, String from) async {
-     await bookingCollection.doc(driverID).set(
-      {'userID': userID, 'to': to, 'from': from, 'status': false},
-    );
-    return true;
+    final docRef = await bookingCollection.add({
+      'userID': userID,
+      'driverID': driverID,
+      'to': to,
+      'from': from,
+      'status': false
+    });
+    return docRef.id;
   }
+
+  Stream<BookingList?> getBookingStatus(String? uid) {
+    return bookingCollection.doc(uid).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return BookingList.fromJson(snapshot.data()!);
+      }
+      return null;
+    });
+  }
+
+  Stream<List<BookingList>> getUserBookings(String? uid) {
+    return bookingCollection.where('userID', isEqualTo: uid).snapshots().map(
+          (snapshot) => snapshot.docs
+              .map((doc) => BookingList.fromJson(doc.data()))
+              .toList(),
+        ); // Fixed: call .data() on the document snapshot to get the data map
+  }
+
+  //   Future<TricycleData?> getBookingData(String bookingID) async {
+  //   final snapshot = await tricycleCollection.doc(driveID).get();
+  //   if (snapshot.exists) {
+  //     return TricycleData.fromMap(snapshot.data()!, driveID);
+  //   }
+  //   return null;
+  // }
 
   // Stream<TricycleData> get tricycleData {
   //   return TricycleData.fromDocumentSnapshot(

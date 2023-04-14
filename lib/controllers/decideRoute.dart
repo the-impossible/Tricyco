@@ -19,21 +19,24 @@ class DecideRouteController extends GetxController {
       );
 
       // Book ride
-      bool success = await databaseService.bookTricycle(
+      String docRef = await databaseService.bookTricycle(
           Get.parameters['userID'], Get.parameters['driverID'], to, from);
       navigator!.pop(Get.context!);
 
-      if (success) {
+      if (docRef != "") {
         ScaffoldMessenger.of(Get.context!)
             .showSnackBar(delegatedSnackBar("Tricycle has been Booked!", true));
-        Get.offNamed(Routes.bookingStatus);
+        var data = {'docRef': docRef};
+
+        Get.offNamed(Routes.bookingStatus, parameters: data);
       } else {
         navigator!.pop(Get.context!);
         ScaffoldMessenger.of(Get.context!)
             .showSnackBar(delegatedSnackBar("Something went wrong!", false));
       }
-    }
+    }else{
     ScaffoldMessenger.of(Get.context!)
         .showSnackBar(delegatedSnackBar("Something went wrong!", false));
+    }
   }
 }
