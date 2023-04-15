@@ -28,6 +28,7 @@ class DelegatedText extends StatelessWidget {
         fontFamily: fontName,
       ),
       textAlign: align,
+      overflow: TextOverflow.ellipsis,
     );
   }
 }

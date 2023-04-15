@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
+import 'package:tricycle/models/bookingList_data.dart';
 import 'package:tricycle/routes/routes.dart';
+import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/constant.dart';
 import 'package:tricycle/utils/form_validators.dart';
 
@@ -10,6 +13,7 @@ class HistoryPage extends StatelessWidget {
   HistoryPage({super.key});
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  DatabaseService databaseService = Get.put(DatabaseService());
 
   @override
   Widget build(BuildContext context) {
@@ -44,35 +48,60 @@ class HistoryPage extends StatelessWidget {
                   ],
                 ),
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: 5,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () => Get.offNamed(Routes.bookingStatus),
-                    child: Card(
-                      margin: const EdgeInsets.only(
-                        top: 15,
-                        right: 20,
-                        left: 20,
-                      ),
-                      color: Constants.primaryColor,
-                      child: ListTile(
-                        leading: const Icon(Icons.history),
-                        title: DelegatedText(
-                          text:
-                              "A ride from main gate to computer science dept",
-                          fontSize: 16,
-                        ),
-                        subtitle: DelegatedText(
-                            text: "Status: Pending", fontSize: 14),
-                        trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                      ),
-                    ),
-                  );
-                },
-              ),
+              StreamBuilder<List<BookingList>>(
+                  stream: databaseService
+                      .getUserBookings(FirebaseAuth.instance.currentUser!.uid),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      return Text("Something went wrong! ${snapshot.error}");
+                    } else if (snapshot.hasData) {
+                      final bookingList = snapshot.data!;
+                      if (bookingList.isNotEmpty) {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: bookingList.length,
+                          itemBuilder: (context, index) {
+                            final bookingListData = bookingList[index];
+                            return InkWell(
+                              onTap: () {
+                                var data = {'docRef': bookingListData.id!};
+                                Get.offNamed(Routes.bookingStatus,
+                                    parameters: data);
+                              },
+                              child: Card(
+                                margin: const EdgeInsets.only(
+                                  top: 15,
+                                  right: 20,
+                                  left: 20,
+                                ),
+                                color: Constants.primaryColor,
+                                child: ListTile(
+                                  leading: const Icon(Icons.history),
+                                  title: DelegatedText(
+                                    text:
+                                        "A ride from ${bookingListData.from} to ${bookingListData.to}",
+                                    fontSize: 16,
+                                  ),
+                                  subtitle: DelegatedText(
+                                      text: (bookingListData.status)
+                                          ? "Status: approved"
+                                          : "Status: pending",
+                                      fontSize: 14),
+                                  trailing: const Icon(
+                                      Icons.arrow_forward_ios_rounded),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        return const Text("No available History");
+                      }
+                    } else {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }),
             ],
           ),
         ),

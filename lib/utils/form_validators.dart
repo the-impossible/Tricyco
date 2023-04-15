@@ -70,4 +70,14 @@ class FormValidator {
     }
     return null;
   }
+
+  static String? fundWallet(String? value) {
+    if (double.parse(value.toString()) < 1) {
+      return 'amount should be a positive number!';
+    }
+    if (value == null || value.isEmpty) {
+      return 'amount is Required!';
+    }
+    return null;
+  }
 }

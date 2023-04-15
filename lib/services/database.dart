@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:tricycle/models/bookingList_data.dart';
 import 'package:tricycle/models/tricycle_data.dart';
 import 'package:tricycle/models/user_data.dart';
+import 'package:tricycle/models/wallet_data.dart';
 
 class DatabaseService extends GetxController {
   String? uid;
@@ -10,15 +11,19 @@ class DatabaseService extends GetxController {
 
   UserData? userData;
 
+  WalletData? walletData;
+
   // collection reference
   var usersCollection = FirebaseFirestore.instance.collection("users");
   var bookingCollection = FirebaseFirestore.instance.collection("BookingList");
   var tricycleCollection =
       FirebaseFirestore.instance.collection("tricycleData");
+  var walletCollection = FirebaseFirestore.instance.collection("wallet");
 
   //Create user
   Future createUserData(
       String name, String email, String phone, String userType) async {
+    walletCollection.doc(uid).set({'balance': 0});
     return await usersCollection.doc(uid).set(
       {
         'name': name,
@@ -88,43 +93,47 @@ class DatabaseService extends GetxController {
       'driverID': driverID,
       'to': to,
       'from': from,
-      'status': false
+      'status': false,
+      'created': FieldValue.serverTimestamp()
     });
     return docRef.id;
   }
 
-  Stream<BookingList?> getBookingStatus(String? uid) {
+  Stream<Booking?> getBookingStatus(String? uid) {
     return bookingCollection.doc(uid).snapshots().map((snapshot) {
       if (snapshot.exists) {
-        return BookingList.fromJson(snapshot.data()!);
+        return Booking.fromJson(snapshot.data()!);
       }
       return null;
     });
   }
 
   Stream<List<BookingList>> getUserBookings(String? uid) {
-    return bookingCollection.where('userID', isEqualTo: uid).snapshots().map(
-          (snapshot) => snapshot.docs
-              .map((doc) => BookingList.fromJson(doc.data()))
-              .toList(),
-        ); // Fixed: call .data() on the document snapshot to get the data map
+    return bookingCollection
+        .where('userID', isEqualTo: uid)
+        .orderBy('created', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => BookingList.fromJson(doc)).toList(),
+        );
   }
 
-  //   Future<TricycleData?> getBookingData(String bookingID) async {
-  //   final snapshot = await tricycleCollection.doc(driveID).get();
-  //   if (snapshot.exists) {
-  //     return TricycleData.fromMap(snapshot.data()!, driveID);
-  //   }
-  //   return null;
-  // }
+  Stream<WalletData?> getBalance(String uid) {
+    return walletCollection.doc(uid).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        walletData = WalletData.fromJson(snapshot.data()!);
+        return walletData;
+      }
+      return null;
+    });
+  }
 
-  // Stream<TricycleData> get tricycleData {
-  //   return TricycleData.fromDocumentSnapshot(
-  //       tricycleCollection.doc(uid).snapshots());
-  // }
-
-  // Stream<QuerySnapshot> get user {
-  //   return usersCollection.snapshots();
-  // }
-
+  Future<bool> setBalance(String uid, String balance) async {
+    print("balance: $balance");
+    walletCollection.doc(uid).update({
+      "balance": walletData!.balance + double.parse(balance),
+    });
+    return true;
+  }
 }

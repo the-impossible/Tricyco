@@ -65,7 +65,7 @@ class BookingStatusPage extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 20),
-                    child: StreamBuilder<BookingList?>(
+                    child: StreamBuilder<Booking?>(
                       stream: databaseService
                           .getBookingStatus(Get.parameters['docRef']),
                       builder: (context, snapshot) {
@@ -73,7 +73,6 @@ class BookingStatusPage extends StatelessWidget {
                           return Text(
                               "Something went wrong! ${snapshot.error}");
                         } else if (snapshot.hasData) {
-                          print("object: ${Get.parameters['docRef']}");
                           return Wrap(
                             alignment: WrapAlignment.center,
                             runSpacing: 20,
@@ -110,10 +109,12 @@ class BookingStatusPage extends StatelessWidget {
                                     fontSize: 20,
                                     fontName: 'InterBold',
                                   ),
-                                  DelegatedText(
-                                    text: snapshot.data!.from,
-                                    fontSize: 18,
-                                    fontName: 'InterBold',
+                                  Flexible(
+                                    child: DelegatedText(
+                                      text: snapshot.data!.from,
+                                      fontSize: 18,
+                                      fontName: 'InterBold',
+                                    ),
                                   ),
                                 ],
                               ),
@@ -126,10 +127,12 @@ class BookingStatusPage extends StatelessWidget {
                                     fontSize: 20,
                                     fontName: 'InterBold',
                                   ),
-                                  DelegatedText(
-                                    text: snapshot.data!.to,
-                                    fontSize: 18,
-                                    fontName: 'InterBold',
+                                  Flexible(
+                                    child: DelegatedText(
+                                      text: snapshot.data!.to,
+                                      fontSize: 18,
+                                      fontName: 'InterBold',
+                                    ),
                                   ),
                                 ],
                               ),
@@ -146,7 +149,9 @@ class BookingStatusPage extends StatelessWidget {
                                 width: size.width,
                                 height: 50,
                                 child: ElevatedButton(
-                                  onPressed: () => Get.offNamed(Routes.history),
+                                  onPressed: () {
+                                    Get.offNamed(Routes.history);
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     primary: Constants.primaryColor,
                                     shape: RoundedRectangleBorder(

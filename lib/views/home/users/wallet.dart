@@ -1,9 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedForm.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
+import 'package:tricycle/controllers/walletController.dart';
+import 'package:tricycle/models/wallet_data.dart';
+import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/constant.dart';
+import 'package:tricycle/utils/form_validators.dart';
 
 class WalletPage extends StatefulWidget {
   WalletPage({super.key});
@@ -13,8 +18,10 @@ class WalletPage extends StatefulWidget {
 }
 
 class _WalletPageState extends State<WalletPage> {
-  final _formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  WalletController walletController = Get.put(WalletController());
+  final _formKey = GlobalKey<FormState>();
+  DatabaseService databaseService = Get.put(DatabaseService());
 
   @override
   Widget build(BuildContext context) {
@@ -68,21 +75,38 @@ class _WalletPageState extends State<WalletPage> {
                             ]),
                         child: Padding(
                           padding: const EdgeInsets.only(left: 18.0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              DelegatedText(
-                                text: 'Balance',
-                                fontSize: 20,
-                                fontName: 'InterMed',
-                              ),
-                              DelegatedText(
-                                text: 'N2000:00',
-                                fontSize: 22,
-                                fontName: 'InterBold',
-                              )
-                            ],
+                          child: StreamBuilder<WalletData?>(
+                            stream: databaseService.getBalance(
+                                FirebaseAuth.instance.currentUser!.uid),
+                            builder: (context, snapshot) {
+                              if (snapshot.hasError) {
+                                return Text(
+                                    "Something went wrong! ${snapshot.error}");
+                              } else if (snapshot.hasData) {
+                                return Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    DelegatedText(
+                                      text: 'Balance',
+                                      fontSize: 20,
+                                      fontName: 'InterMed',
+                                    ),
+                                    DelegatedText(
+                                      text:
+                                          "₦${snapshot.data!.balance.toString()}",
+                                      fontSize: 22,
+                                      fontName: 'InterBold',
+                                    )
+                                  ],
+                                );
+                              } else {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -128,36 +152,46 @@ class _WalletPageState extends State<WalletPage> {
                       horizontal: 20,
                       vertical: 20,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        DelegatedText(text: 'Fund Wallet', fontSize: 18),
-                        const delegatedForm(
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DelegatedText(text: 'Fund Wallet', fontSize: 18),
+                          delegatedForm(
                             fieldName: 'Amount',
                             icon: Icons.monetization_on,
-                            hintText: 'Enter the Amount'),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: SizedBox(
-                            width: size.width,
-                            height: 60,
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                primary: Constants.secondaryColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                            hintText: 'Enter the Amount',
+                            formController: walletController.amountController,
+                            validator: FormValidator.fundWallet,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: SizedBox(
+                              width: size.width,
+                              height: 60,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    walletController.setBalance();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: Constants.secondaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
-                              ),
-                              child: DelegatedText(
-                                fontSize: 20,
-                                text: 'Fund Wallet',
-                                color: Constants.primaryColor,
+                                child: DelegatedText(
+                                  fontSize: 20,
+                                  text: 'Fund Wallet',
+                                  color: Constants.primaryColor,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
