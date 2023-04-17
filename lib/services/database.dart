@@ -1,9 +1,13 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/models/bookingList_data.dart';
 import 'package:tricycle/models/tricycle_data.dart';
 import 'package:tricycle/models/user_data.dart';
 import 'package:tricycle/models/wallet_data.dart';
+import 'package:flutter/services.dart';
 
 class DatabaseService extends GetxController {
   String? uid;
@@ -19,11 +23,13 @@ class DatabaseService extends GetxController {
   var tricycleCollection =
       FirebaseFirestore.instance.collection("tricycleData");
   var walletCollection = FirebaseFirestore.instance.collection("wallet");
+  var filesCollection = FirebaseStorage.instance.ref();
 
   //Create user
   Future createUserData(
       String name, String email, String phone, String userType) async {
     walletCollection.doc(uid).set({'balance': 0});
+    await setImage(uid);
     return await usersCollection.doc(uid).set(
       {
         'name': name,
@@ -100,12 +106,14 @@ class DatabaseService extends GetxController {
   }
 
   Stream<Booking?> getBookingStatus(String? uid) {
-    return bookingCollection.doc(uid).snapshots().map((snapshot) {
-      if (snapshot.exists) {
-        return Booking.fromJson(snapshot.data()!);
-      }
-      return null;
-    });
+    return bookingCollection.doc(uid).snapshots().map(
+      (snapshot) {
+        if (snapshot.exists) {
+          return Booking.fromJson(snapshot.data()!);
+        }
+        return null;
+      },
+    );
   }
 
   Stream<List<BookingList>> getUserBookings(String? uid) {
@@ -130,10 +138,51 @@ class DatabaseService extends GetxController {
   }
 
   Future<bool> setBalance(String uid, String balance) async {
-    print("balance: $balance");
     walletCollection.doc(uid).update({
       "balance": walletData!.balance + double.parse(balance),
     });
     return true;
+  }
+
+  Stream<UserData?> getUserProfile(String uid) {
+    return usersCollection.doc(uid).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return UserData.fromJson(snapshot.data()!);
+      }
+    });
+  }
+
+  Future<bool> updateProfile(
+    String uid,
+    String name,
+    String email,
+    String phone,
+  ) async {
+    usersCollection.doc(uid).update({
+      "email": email,
+      "phone": phone,
+      "name": name,
+    });
+    return true;
+  }
+
+  Future<bool> updateImage(File? image, String uid) async {
+    filesCollection.child(uid).putFile(image!);
+    return true;
+  }
+
+  Future<bool> setImage(String? uid) async {
+    final ByteData byteData = await rootBundle.load("assets/user.png");
+    final Uint8List imageData = byteData.buffer.asUint8List();
+    filesCollection.child(uid!).putData(imageData);
+    return true;
+  }
+
+  Stream<String?> getImage(String uid) {
+    try {
+      return filesCollection.child(uid).getDownloadURL().asStream();
+    } catch (e) {
+      return Stream.value(null);
+    }
   }
 }

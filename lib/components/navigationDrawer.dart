@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedText.dart';
+import 'package:tricycle/models/user_data.dart';
 import 'package:tricycle/routes/routes.dart';
 import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/constant.dart';
@@ -27,8 +28,8 @@ class NavigationDrawer extends StatelessWidget {
 }
 
 Widget buildHeader(BuildContext context) {
-  final user = FirebaseAuth.instance.currentUser!;
   final size = MediaQuery.of(context).size;
+  DatabaseService databaseService = Get.put(DatabaseService());
   return Material(
     color: Constants.secondaryColor,
     child: InkWell(
@@ -46,39 +47,71 @@ Widget buildHeader(BuildContext context) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CircleAvatar(
-              backgroundColor: Constants.primaryColor,
-              maxRadius: 50,
-              minRadius: 50,
-              child: ClipOval(
-                child: Image.asset(
-                  'assets/user.png',
-                  height: 160,
-                  width: 160,
-                  fit: BoxFit.cover,
-                ),
-              ),
+            StreamBuilder<String?>(
+                stream: databaseService
+                    .getImage(FirebaseAuth.instance.currentUser!.uid),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text("Something went wrong! ${snapshot.error}");
+                  } else if (snapshot.hasData) {
+                    return CircleAvatar(
+                      backgroundColor: Constants.primaryColor,
+                      maxRadius: 50,
+                      minRadius: 50,
+                      child: ClipOval(
+                        child: Image.network(
+                          snapshot.data!,
+                          height: 160,
+                          width: 160,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                }),
+            StreamBuilder<UserData?>(
+              stream: databaseService
+                  .getUserProfile(FirebaseAuth.instance.currentUser!.uid),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text("Something went wrong! ${snapshot.error}");
+                } else if (snapshot.hasData) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 12),
+                      Text(
+                        snapshot.data!.name,
+                        style: const TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.w300,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      DelegatedText(
+                        text: snapshot.data!.email,
+                        fontSize: 16,
+                      ),
+                      Text(
+                        snapshot.data!.phone,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
             ),
-            const SizedBox(height: 12),
-            const Text(
-              "Richard",
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.w300,
-                letterSpacing: 1,
-              ),
-            ),
-            DelegatedText(
-              text: user.email.toString(),
-              fontSize: 16,
-            ),
-            const Text(
-              "08124235487",
-              style: TextStyle(
-                fontSize: 16,
-                letterSpacing: 1,
-              ),
-            )
           ],
         ),
       ),
