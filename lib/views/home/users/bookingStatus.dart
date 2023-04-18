@@ -73,6 +73,8 @@ class BookingStatusPage extends StatelessWidget {
                           return Text(
                               "Something went wrong! ${snapshot.error}");
                         } else if (snapshot.hasData) {
+                          print(
+                              "object: ${databaseService.userData!.userType.runtimeType}");
                           return Wrap(
                             alignment: WrapAlignment.center,
                             runSpacing: 20,
@@ -150,7 +152,14 @@ class BookingStatusPage extends StatelessWidget {
                                 height: 50,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    Get.offNamed(Routes.history);
+                                    (databaseService.userData!.userType ==
+                                            'Driver')
+                                        ? databaseService
+                                            .approveBooking(
+                                                Get.parameters['docRef']!)
+                                            .listen((_) => Get.offNamed(
+                                                Routes.bookingList))
+                                        : Get.offNamed(Routes.history);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     primary: Constants.primaryColor,
@@ -160,7 +169,10 @@ class BookingStatusPage extends StatelessWidget {
                                   ),
                                   child: DelegatedText(
                                     fontSize: 20,
-                                    text: 'View History',
+                                    text: (databaseService.userData!.userType ==
+                                            'Driver')
+                                        ? 'Approve'
+                                        : 'View History',
                                     color: Constants.secondaryColor,
                                   ),
                                 ),

@@ -149,6 +149,7 @@ class DatabaseService extends GetxController {
       if (snapshot.exists) {
         return UserData.fromJson(snapshot.data()!);
       }
+      return null;
     });
   }
 
@@ -184,5 +185,24 @@ class DatabaseService extends GetxController {
     } catch (e) {
       return Stream.value(null);
     }
+  }
+
+  Stream<List<BookingList>> getDriverBookings(String? uid) {
+    return bookingCollection
+        .where('driverID', isEqualTo: uid)
+        .orderBy('created', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => BookingList.fromJson(doc)).toList(),
+        );
+  }
+
+  Stream<bool> approveBooking(
+      String uid) {
+    bookingCollection.doc(uid).update({
+      "status": true,
+    });
+    return Stream.value(true);
   }
 }

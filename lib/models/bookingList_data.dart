@@ -21,7 +21,7 @@ class BookingList {
     return BookingList(
         id: snapshot.id,
         driverID: snapshot['driverID'],
-        userID: snapshot['userID'],
+        userID: snapshot['userID'].toString(),
         from: snapshot['from'],
         to: snapshot['to'],
         status: snapshot['status']);
