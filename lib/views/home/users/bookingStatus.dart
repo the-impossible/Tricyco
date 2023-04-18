@@ -73,8 +73,6 @@ class BookingStatusPage extends StatelessWidget {
                           return Text(
                               "Something went wrong! ${snapshot.error}");
                         } else if (snapshot.hasData) {
-                          print(
-                              "object: ${databaseService.userData!.userType.runtimeType}");
                           return Wrap(
                             alignment: WrapAlignment.center,
                             runSpacing: 20,
@@ -152,14 +150,18 @@ class BookingStatusPage extends StatelessWidget {
                                 height: 50,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    (databaseService.userData!.userType ==
-                                            'Driver')
-                                        ? databaseService
-                                            .approveBooking(
+                                    (snapshot.data!.status == true &&
+                                            databaseService
+                                                    .userData!.userType ==
+                                                'Driver')
+                                        ? null
+                                        : (databaseService.userData!.userType ==
+                                                'Driver')
+                                            ? databaseService.approveBooking(
                                                 Get.parameters['docRef']!)
-                                            .listen((_) => Get.offNamed(
-                                                Routes.bookingList))
-                                        : Get.offNamed(Routes.history);
+                                            // .listen((_) => Get.offNamed(
+                                            //     Routes.bookingList))
+                                            : Get.offNamed(Routes.history);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     primary: Constants.primaryColor,

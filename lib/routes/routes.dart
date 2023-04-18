@@ -77,7 +77,7 @@ final getPages = [
   ),
   GetPage(
     name: Routes.bookingList,
-    page: () => const BookingList(),
+    page: () => Bookings(),
   ),
   GetPage(
     name: Routes.driverBookingStatus,

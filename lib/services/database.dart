@@ -198,8 +198,31 @@ class DatabaseService extends GetxController {
         );
   }
 
-  Stream<bool> approveBooking(
-      String uid) {
+  Stream<List<BookingList>> getDriverRequestBookings(String? uid) {
+    return bookingCollection
+        .where('driverID', isEqualTo: uid)
+        .where('status', isEqualTo: false)
+        .orderBy('created', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => BookingList.fromJson(doc)).toList(),
+        );
+  }
+
+  Stream<List<BookingList>> getDriverApprovedBookings(String? uid) {
+    return bookingCollection
+        .where('driverID', isEqualTo: uid)
+        .where('status', isEqualTo: true)
+        .orderBy('created', descending: true)
+        .snapshots()
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) => BookingList.fromJson(doc)).toList(),
+        );
+  }
+
+  Stream<bool> approveBooking(String uid) {
     bookingCollection.doc(uid).update({
       "status": true,
     });

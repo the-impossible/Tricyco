@@ -1,11 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:tricycle/components/delegatedText.dart';
+import 'package:tricycle/models/bookingList_data.dart';
+import 'package:tricycle/models/user_data.dart';
 import 'package:tricycle/routes/routes.dart';
+import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/constant.dart';
 
-class BookingList extends StatelessWidget {
-  const BookingList({super.key});
+class Bookings extends StatelessWidget {
+  Bookings({super.key});
+
+  DatabaseService databaseService = Get.put(DatabaseService());
 
   @override
   Widget build(BuildContext context) {
@@ -86,62 +93,163 @@ class BookingList extends StatelessWidget {
                         child: TabBarView(
                           children: [
                             SingleChildScrollView(
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: 14,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () {
-                                      Get.toNamed(Routes.driverBookingStatus);
-                                    },
-                                    child: Card(
-                                      margin: const EdgeInsets.only(top: 15),
-                                      color: Constants.secondaryColor,
-                                      child: ListTile(
-                                        title: DelegatedText(
-                                          text: "Passenger Name",
-                                          fontSize: 18,
+                              child: StreamBuilder<List<BookingList>>(
+                                stream:
+                                    databaseService.getDriverRequestBookings(
+                                        FirebaseAuth.instance.currentUser!.uid),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    return Text(
+                                        "Something went wrong! ${snapshot.error}");
+                                  } else if (snapshot.hasData) {
+                                    final bookingList = snapshot.data!;
+                                    if (bookingList.isNotEmpty) {
+                                      return ListView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: bookingList.length,
+                                        itemBuilder: (context, index) {
+                                          final bookingData =
+                                              bookingList[index];
+                                          return InkWell(
+                                            onTap: () {
+                                              var data = {
+                                                'docRef': bookingData.id!
+                                              };
+                                              Get.offNamed(Routes.bookingStatus,
+                                                  parameters: data);
+                                            },
+                                            child: Card(
+                                              margin: const EdgeInsets.only(
+                                                  top: 15),
+                                              color: Constants.secondaryColor,
+                                              child: StreamBuilder<UserData?>(
+                                                stream: databaseService
+                                                    .getUserProfile(
+                                                        bookingData.userID),
+                                                builder: (context, futureShot) {
+                                                  if (futureShot.hasData) {
+                                                    return ListTile(
+                                                      title: DelegatedText(
+                                                        text: futureShot
+                                                            .data!.name,
+                                                        fontSize: 18,
+                                                      ),
+                                                      subtitle: DelegatedText(
+                                                          text:
+                                                              "Destination: ${bookingData.to}",
+                                                          fontSize: 12),
+                                                      trailing: const Icon(Icons
+                                                          .arrow_forward_ios_rounded),
+                                                    );
+                                                  } else {
+                                                    return const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    );
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    } else {
+                                      return Center(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20.0),
+                                          child: DelegatedText(
+                                            text: "No available Request",
+                                            fontSize: 20,
+                                          ),
                                         ),
-                                        subtitle: DelegatedText(
-                                            text:
-                                                "Destination: Central Administration",
-                                            fontSize: 12),
-                                        trailing: const Icon(
-                                            Icons.arrow_forward_ios_rounded),
-                                      ),
-                                    ),
-                                  );
+                                      );
+                                    }
+                                  } else {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  }
                                 },
                               ),
                             ),
                             SingleChildScrollView(
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: 14,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () {
-                                      Get.toNamed(Routes.driverBookingStatus);
-                                    },
-                                    child: Card(
-                                      margin: const EdgeInsets.only(top: 15),
-                                      color: Constants.secondaryColor,
-                                      child: ListTile(
-                                        title: DelegatedText(
-                                          text: "Passenger Name",
-                                          fontSize: 18,
+                              child: StreamBuilder<List<BookingList>>(
+                                stream:
+                                    databaseService.getDriverApprovedBookings(
+                                        FirebaseAuth.instance.currentUser!.uid),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    return Text(
+                                        "Something went wrong! ${snapshot.error}");
+                                  } else if (snapshot.hasData) {
+                                    final bookingList = snapshot.data!;
+                                    if (bookingList.isNotEmpty) {
+                                      return ListView.builder(
+                                        shrinkWrap: true,
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        itemCount: bookingList.length,
+                                        itemBuilder: (context, index) {
+                                          final bookingData =
+                                              bookingList[index];
+                                          return InkWell(
+                                            onTap: () {
+                                              Get.toNamed(
+                                                  Routes.driverBookingStatus);
+                                            },
+                                            child: Card(
+                                              margin: const EdgeInsets.only(
+                                                  top: 15),
+                                              color: Constants.secondaryColor,
+                                              child: StreamBuilder<UserData?>(
+                                                stream: databaseService
+                                                    .getUserProfile(
+                                                        bookingData.userID),
+                                                builder: (context, futureShot) {
+                                                  if (futureShot.hasData) {
+                                                    return ListTile(
+                                                      title: DelegatedText(
+                                                        text: futureShot
+                                                            .data!.name,
+                                                        fontSize: 18,
+                                                      ),
+                                                      subtitle: DelegatedText(
+                                                          text:
+                                                              "Destination: ${bookingData.to}",
+                                                          fontSize: 12),
+                                                      trailing: const Icon(Icons
+                                                          .arrow_forward_ios_rounded),
+                                                    );
+                                                  } else {
+                                                    return const Center(
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    );
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    } else {
+                                      return Center(
+                                        child: Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20.0),
+                                          child: DelegatedText(
+                                            text: "No approved Request",
+                                            fontSize: 20,
+                                          ),
                                         ),
-                                        subtitle: DelegatedText(
-                                            text:
-                                                "Destination: Central Administration",
-                                            fontSize: 12),
-                                        trailing: const Icon(
-                                            Icons.arrow_forward_ios_rounded),
-                                      ),
-                                    ),
-                                  );
+                                      );
+                                    }
+                                  } else {
+                                    return const Center(
+                                        child: CircularProgressIndicator());
+                                  }
                                 },
                               ),
                             ),

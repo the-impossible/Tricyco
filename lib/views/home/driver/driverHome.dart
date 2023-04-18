@@ -247,7 +247,7 @@ class _DriverHomePageState extends State<DriverHomePage> {
                             return const Center(
                                 child: CircularProgressIndicator());
                           }
-                        }),
+                        },),
                   ),
                 ),
               ),
