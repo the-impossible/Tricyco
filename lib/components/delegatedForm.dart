@@ -5,7 +5,6 @@ import '../utils/constant.dart';
 class delegatedForm extends StatefulWidget {
   final String fieldName;
   final IconData icon;
-  final IconData? editIcon;
   final String hintText;
   final TextEditingController? formController;
   final String? Function(String?)? validator;
@@ -15,7 +14,6 @@ class delegatedForm extends StatefulWidget {
     required this.icon,
     required this.hintText,
     this.formController,
-    this.editIcon,
     this.validator,
     Key? key,
   }) : super(key: key);
@@ -24,12 +22,10 @@ class delegatedForm extends StatefulWidget {
   State<delegatedForm> createState() => _delegatedFormState();
 }
 
-String? _errorText;
-bool? enabled = false;
-
 class _delegatedFormState extends State<delegatedForm> {
   @override
   Widget build(BuildContext context) {
+    String? _errorText;
     return Column(
       children: [
         Padding(
@@ -44,21 +40,12 @@ class _delegatedFormState extends State<delegatedForm> {
                 fontName: 'InterMed',
               ),
               const Spacer(),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    enabled = !enabled!;
-                  });
-                },
-                icon: Icon(widget.editIcon, size: 30),
-              )
             ],
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 12, bottom: 12),
           child: TextFormField(
-            enabled: (widget.editIcon != null) ? enabled : !enabled!,
             validator: widget.validator,
             controller: widget.formController,
             style: const TextStyle(

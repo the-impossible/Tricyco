@@ -8,7 +8,7 @@ import 'package:tricycle/services/database.dart';
 
 class TricycleDetailsController extends GetxController {
   TricycleData? tricycleData;
-  UserData? userData;
+  UserData? driverData;
 
   String driverID = "";
 
@@ -22,8 +22,8 @@ class TricycleDetailsController extends GetxController {
     );
     // Update tricycle data
     tricycleData = await databaseService.getTricycleData(driverID);
-    userData = await databaseService.getUser(driverID);
-    if (tricycleData != null && userData != null) {
+    driverData = await databaseService.getUser(driverID, 'Driver');
+    if (tricycleData != null && driverData != null) {
       navigator!.pop(Get.context!);
       Get.toNamed(Routes.kekeDetails);
     } else {

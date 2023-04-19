@@ -15,7 +15,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tricycle/utils/form_validators.dart';
 
 class UserProfilePage extends StatefulWidget {
-  UserProfilePage({super.key});
+  UserProfilePage({Key? key}) : super(key: key);
 
   @override
   State<UserProfilePage> createState() => _UserProfilePageState();
@@ -61,7 +61,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Constants.secondaryColor,
-        drawer: const NavigationDrawer(),
+        // drawer: const NavigationDrawer(),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
@@ -150,29 +150,30 @@ class _UserProfilePageState extends State<UserProfilePage> {
                           return Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.only(top: 10.0),
+                                padding: const EdgeInsets.only(top: 20.0),
                                 child: Center(
                                   child: DelegatedText(
-                                    text: "User Name",
+                                    text: databaseService.userData!.name,
                                     fontSize: 22,
                                     fontName: 'InterBold',
                                   ),
                                 ),
                               ),
-                              delegatedForm(
-                                fieldName: 'Full name',
-                                icon: Icons.person,
-                                hintText: 'Enter full name',
-                                editIcon: Icons.edit,
-                                validator: FormValidator.validateName,
-                                formController:
-                                    profileController.nameController,
+                              Padding(
+                                padding: const EdgeInsets.only(top: 18.0),
+                                child: delegatedForm(
+                                  fieldName: 'Full name',
+                                  icon: Icons.person,
+                                  hintText: 'Enter full name',
+                                  validator: FormValidator.validateName,
+                                  formController:
+                                      profileController.nameController,
+                                ),
                               ),
                               delegatedForm(
                                 fieldName: 'Email',
                                 icon: Icons.mail,
                                 hintText: 'Enter Email',
-                                editIcon: Icons.edit,
                                 validator: FormValidator.validateEmail,
                                 formController:
                                     profileController.emailController,

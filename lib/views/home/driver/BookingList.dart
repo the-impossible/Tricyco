@@ -196,8 +196,11 @@ class Bookings extends StatelessWidget {
                                               bookingList[index];
                                           return InkWell(
                                             onTap: () {
-                                              Get.toNamed(
-                                                  Routes.driverBookingStatus);
+                                              var data = {
+                                                'docRef': bookingData.id!
+                                              };
+                                              Get.offNamed(Routes.bookingStatus,
+                                                  parameters: data);
                                             },
                                             child: Card(
                                               margin: const EdgeInsets.only(

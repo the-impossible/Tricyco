@@ -7,6 +7,8 @@ class BookingList {
   final String from;
   final String to;
   final bool status;
+  final bool hasCompleted;
+  final DateTime? created;
 
   BookingList({
     this.id,
@@ -15,16 +17,21 @@ class BookingList {
     required this.from,
     required this.to,
     required this.status,
+    required this.hasCompleted,
+    required this.created,
   });
 
   factory BookingList.fromJson(DocumentSnapshot snapshot) {
     return BookingList(
-        id: snapshot.id,
-        driverID: snapshot['driverID'],
-        userID: snapshot['userID'].toString(),
-        from: snapshot['from'],
-        to: snapshot['to'],
-        status: snapshot['status']);
+      id: snapshot.id,
+      driverID: snapshot['driverID'],
+      userID: snapshot['userID'],
+      from: snapshot['from'],
+      to: snapshot['to'],
+      status: snapshot['status'],
+      hasCompleted: snapshot['hasCompleted'],
+      created: (snapshot['created'] as Timestamp).toDate(),
+    );
   }
 }
 
@@ -34,6 +41,7 @@ class Booking {
   final String from;
   final String to;
   final bool status;
+  final bool hasCompleted;
   final DateTime? created;
 
   Booking({
@@ -42,6 +50,7 @@ class Booking {
     required this.from,
     required this.to,
     required this.status,
+    required this.hasCompleted,
     required this.created,
   });
 
@@ -52,6 +61,7 @@ class Booking {
       from: snapshot['from'],
       to: snapshot['to'],
       status: snapshot['status'],
+      hasCompleted: snapshot['hasCompleted'],
       created: (snapshot['created'] as Timestamp).toDate(),
     );
   }
@@ -63,6 +73,7 @@ class Booking {
       'to': to,
       'from': from,
       'status': status,
+      'hasCompleted': hasCompleted,
       'created': created == null ? null : Timestamp.fromDate(created!),
     };
   }

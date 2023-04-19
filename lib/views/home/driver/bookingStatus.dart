@@ -124,7 +124,7 @@ class DriverBookingStatusPage extends StatelessWidget {
                         SizedBox(
                           width: size.width,
                           height: 50,
-                          child: ElevatedButton(
+                          child: ElevatedButton( 
                             onPressed: () {},
                             style: ElevatedButton.styleFrom(
                               primary: Constants.primaryColor,

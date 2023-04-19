@@ -38,11 +38,12 @@ class ProfileController extends GetxController {
           emailController.text.trim(),
           phoneController.text.trim(),
         );
-
-        await databaseService.updateImage(
-          image,
-          FirebaseAuth.instance.currentUser!.uid,
-        );
+        if (image != null) {
+          await databaseService.updateImage(
+            image,
+            FirebaseAuth.instance.currentUser!.uid,
+          );
+        }
 
         ScaffoldMessenger.of(Get.context!).showSnackBar(
             delegatedSnackBar("Account Updated Successfully", true));

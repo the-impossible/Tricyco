@@ -14,6 +14,7 @@ class KekeDetailsPage extends StatelessWidget {
 
   TricycleDetailsController tricycleDetailsController =
       Get.put(TricycleDetailsController());
+
   DatabaseService databaseService = Get.put(DatabaseService());
 
   @override
@@ -23,7 +24,6 @@ class KekeDetailsPage extends StatelessWidget {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Constants.secondaryColor,
-        drawer: const NavigationDrawer(),
         body: Stack(
           children: [
             Image.asset(
@@ -72,19 +72,37 @@ class KekeDetailsPage extends StatelessWidget {
                   height: size.height * .6,
                   child: Column(
                     children: [
-                      SizedBox(
-                        width: 400,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 40.0, bottom: 40),
-                          child: Image.asset(
-                            "assets/user.png",
-                            width: 160,
-                            height: 160,
-                          ),
-                        ),
-                      ),
+                      StreamBuilder<String?>(
+                          stream: databaseService
+                              .getImage(FirebaseAuth.instance.currentUser!.uid),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Text(
+                                  "Something went wrong! ${snapshot.error}");
+                            } else if (snapshot.hasData) {
+                              return SizedBox(
+                                width: 400,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 40.0, bottom: 40),
+                                  child: ClipOval(
+                                    child: Image.network(
+                                      snapshot.data!,
+                                      width: 160,
+                                      height: 160,
+                                      // colorBlendMode: BlendMode.darken,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          }),
                       DelegatedText(
-                        text: tricycleDetailsController.userData!.name,
+                        text: tricycleDetailsController.driverData!.name,
                         fontSize: 20,
                         fontName: 'InterBold',
                       ),

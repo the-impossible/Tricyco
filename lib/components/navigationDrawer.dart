@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tricycle/components/delegatedSnackBar.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/models/user_data.dart';
 import 'package:tricycle/routes/routes.dart';
@@ -33,11 +34,6 @@ Widget buildHeader(BuildContext context) {
   return Material(
     color: Constants.secondaryColor,
     child: InkWell(
-      onTap: () {
-        Navigator.pop(context);
-
-        Get.toNamed(Routes.userProfile);
-      },
       child: Container(
         padding: EdgeInsets.only(
           top: size.height * .05,
@@ -183,6 +179,9 @@ Widget buildMenuItems(BuildContext context) {
                             onPressed: () {
                               Navigator.pop(context);
                               Navigator.pop(context);
+                              ScaffoldMessenger.of(Get.context!).showSnackBar(
+                                  delegatedSnackBar(
+                                      "You are now logout", true));
                               FirebaseAuth.instance.signOut();
                             },
                             child: const Text('Logout'),
@@ -242,6 +241,9 @@ Widget buildMenuItems(BuildContext context) {
                             onPressed: () {
                               Navigator.pop(context);
                               Navigator.pop(context);
+                              ScaffoldMessenger.of(Get.context!).showSnackBar(
+                                  delegatedSnackBar(
+                                      "You are now logout", true));
                               FirebaseAuth.instance.signOut();
                             },
                             child: const Text('Logout'),

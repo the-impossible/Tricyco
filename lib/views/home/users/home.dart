@@ -22,22 +22,6 @@ class _HomePageState extends State<HomePage> {
   TricycleDetailsController tricycleDetailsController =
       Get.put(TricycleDetailsController());
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   getUserType();
-  // }
-
-  // String userType = "";
-
-  // Future<void> getUserType() async {
-  //   final userId = FirebaseAuth.instance.currentUser!.uid;
-  //   userData = await DatabaseService().getUser(userId);
-  //   setState(() {
-  //     userType = userData!.userType;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;

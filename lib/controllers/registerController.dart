@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedSnackBar.dart';
 import 'package:tricycle/services/database.dart';
+import 'package:uuid/uuid.dart';
 
 class RegisterController extends GetxController {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+
+  String randomId = Uuid().v4();
 
   @override
   void dispose() {
@@ -51,7 +54,6 @@ class RegisterController extends GetxController {
               "plateNumber": "",
               "color": "Yellow",
               "pass": 4,
-              "hasCompleted": true,
               "status": true,
             },
           );

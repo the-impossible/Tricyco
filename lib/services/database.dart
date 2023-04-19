@@ -41,12 +41,14 @@ class DatabaseService extends GetxController {
   }
 
   //Determine userType
-  Future<UserData?> getUser(String uid) async {
+  Future<UserData?> getUser(String uid, String? userType) async {
     // Query database to get user type
     final snapshot = await usersCollection.doc(uid).get();
     // Return user type as string
     if (snapshot.exists) {
-      userData = UserData.fromJson(snapshot.data()!);
+      if (userType != 'Driver') {
+        userData = UserData.fromJson(snapshot.data()!);
+      }
       return UserData.fromJson(snapshot.data()!);
     }
     return null;
@@ -100,6 +102,7 @@ class DatabaseService extends GetxController {
       'to': to,
       'from': from,
       'status': false,
+      'hasCompleted': false,
       'created': FieldValue.serverTimestamp()
     });
     return docRef.id;
@@ -190,6 +193,7 @@ class DatabaseService extends GetxController {
   Stream<List<BookingList>> getDriverBookings(String? uid) {
     return bookingCollection
         .where('driverID', isEqualTo: uid)
+        .where("status", isEqualTo: false)
         .orderBy('created', descending: true)
         .snapshots()
         .map(

@@ -38,7 +38,7 @@ class _WrapperState extends State<Wrapper> {
           final userId = FirebaseAuth.instance.currentUser!.uid;
           databaseService.uid = userId;
           return FutureBuilder(
-            future: databaseService.getUser(userId),
+            future: databaseService.getUser(userId, 'Users'),
             builder: (context, AsyncSnapshot<UserData?> userData) {
               if (userData.connectionState == ConnectionState.waiting) {
                 return const Loading();

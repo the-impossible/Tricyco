@@ -16,7 +16,7 @@ import 'package:tricycle/views/home/driver/updateTricyle.dart';
 void showUpdateTricycle(BuildContext context) {
   showModalBottomSheet(
     isScrollControlled: true,
-    // isDismissible: false,
+    isDismissible: false,
     context: context,
     builder: (context) {
       return Padding(
@@ -177,77 +177,81 @@ class _DriverHomePageState extends State<DriverHomePage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 10, right: 10),
                     child: StreamBuilder<List<BookingList>>(
-                        stream: databaseService.getDriverBookings(
-                            FirebaseAuth.instance.currentUser!.uid),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return Text(
-                                "Something went wrong! ${snapshot.error}");
-                          } else if (snapshot.hasData) {
-                            final bookingList = snapshot.data!;
-                            if (bookingList.isNotEmpty) {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: min(4, bookingList.length),
-                                itemBuilder: (context, index) {
-                                  final bookingData = bookingList[index];
-                                  return InkWell(
-                                    onTap: () {
-                                      var data = {'docRef': bookingData.id!};
-                                      Get.offNamed(Routes.bookingStatus,
-                                          parameters: data);
-                                    },
-                                    child: Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      elevation: 1,
-                                      margin: const EdgeInsets.only(top: 15),
-                                      color: Constants.primaryColor,
-                                      child: StreamBuilder<UserData?>(
-                                          stream:
-                                              databaseService.getUserProfile(
-                                                  bookingData.userID),
-                                          builder: (context, futureShot) {
-                                            if (futureShot.hasData) {
-                                              return ListTile(
-                                                title: DelegatedText(
-                                                  text: futureShot.data!.name,
-                                                  fontSize: 19,
-                                                  fontName: 'InterMed',
-                                                ),
-                                                subtitle: DelegatedText(
-                                                    text:
-                                                        "${bookingData.from} - ${bookingData.to}",
-                                                    fontSize: 14),
-                                                trailing: const Icon(
-                                                  Icons
-                                                      .arrow_forward_ios_rounded,
-                                                  size: 30,
-                                                  color:
-                                                      Constants.secondaryColor,
-                                                ),
-                                              );
-                                            } else {
-                                              return const Center(
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              );
-                                            }
-                                          }),
+                      stream: databaseService.getDriverBookings(
+                          FirebaseAuth.instance.currentUser!.uid),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text(
+                              "Something went wrong! ${snapshot.error}");
+                        } else if (snapshot.hasData) {
+                          final bookingList = snapshot.data!;
+                          if (bookingList.isNotEmpty) {
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: min(4, bookingList.length),
+                              itemBuilder: (context, index) {
+                                final bookingData = bookingList[index];
+                                return InkWell(
+                                  onTap: () {
+                                    var data = {'docRef': bookingData.id!};
+                                    Get.toNamed(Routes.bookingStatus,
+                                        parameters: data);
+                                  },
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                  );
-                                },
-                              );
-                            } else {
-                              return const Text("No available Request");
-                            }
+                                    elevation: 1,
+                                    margin: const EdgeInsets.only(top: 15),
+                                    color: Constants.primaryColor,
+                                    child: StreamBuilder<UserData?>(
+                                        stream: databaseService
+                                            .getUserProfile(bookingData.userID),
+                                        builder: (context, futureShot) {
+                                          if (futureShot.hasData) {
+                                            return ListTile(
+                                              title: DelegatedText(
+                                                text: futureShot.data!.name,
+                                                fontSize: 19,
+                                                fontName: 'InterMed',
+                                              ),
+                                              subtitle: DelegatedText(
+                                                  text:
+                                                      "${bookingData.from} - ${bookingData.to}",
+                                                  fontSize: 14),
+                                              trailing: const Icon(
+                                                Icons.arrow_forward_ios_rounded,
+                                                size: 30,
+                                                color: Constants.secondaryColor,
+                                              ),
+                                            );
+                                          } else {
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                        }),
+                                  ),
+                                );
+                              },
+                            );
                           } else {
-                            return const Center(
-                                child: CircularProgressIndicator());
+                            return Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 18.0),
+                                child: DelegatedText(
+                                    text: "No available Request", fontSize: 18),
+                              ),
+                            );
                           }
-                        },),
+                        } else {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
                   ),
                 ),
               ),
