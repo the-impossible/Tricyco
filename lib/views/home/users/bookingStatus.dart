@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
+import 'package:tricycle/controllers/approveBookingController.dart';
 import 'package:tricycle/routes/routes.dart';
 import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/constant.dart';
@@ -11,6 +12,7 @@ class BookingStatusPage extends StatelessWidget {
   BookingStatusPage({super.key});
   final scaffoldKey = GlobalKey<ScaffoldState>();
   DatabaseService databaseService = Get.put(DatabaseService());
+  ApproveBookingController approveBookingController = Get.put(ApproveBookingController());
 
   @override
   Widget build(BuildContext context) {
@@ -156,8 +158,9 @@ class BookingStatusPage extends StatelessWidget {
                                         ? null
                                         : (databaseService.userData!.userType ==
                                                 'Driver')
-                                            ? databaseService.approveBooking(
-                                                Get.parameters['docRef']!)
+                                            ? approveBookingController.approveStatus(Get.parameters['docRef']!)
+                                            // databaseService.approveBooking(
+                                            //     Get.parameters['docRef']!)
                                             // .listen((_) => Get.offNamed(
                                             //     Routes.bookingList))
                                             : Get.offNamed(Routes.history);

@@ -13,5 +13,5 @@ void main() async {
     debugShowCheckedModeBanner: false,
     initialRoute: Routes.splash,
     getPages: getPages,
-  ));   
+  ));
 }

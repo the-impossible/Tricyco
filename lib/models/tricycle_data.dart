@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TricycleData {
@@ -24,6 +26,7 @@ class TricycleData {
       status: snapshot['status'],
     );
   }
+
   factory TricycleData.fromMap(Map<String, dynamic> map, String id) {
     return TricycleData(
       id: id,
@@ -33,4 +36,10 @@ class TricycleData {
       status: map['status'],
     );
   }
+
 }
+
+  TricycleData tricycleDataFromJson(String str) =>
+    TricycleData.fromJson(json.decode(str));
+
+

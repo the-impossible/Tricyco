@@ -1,6 +1,8 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/models/bookingList_data.dart';
@@ -226,10 +228,34 @@ class DatabaseService extends GetxController {
         );
   }
 
-  Stream<bool> approveBooking(String uid) {
+  Future<int?> getPassNumber(String driverID) async {
+    final snapshot = await tricycleCollection.doc(driverID).get();
+    if (snapshot.exists) {
+      final data = snapshot.data()!;
+      final pass = data['pass'];
+      return pass;
+    }
+    return null;
+  }
+
+  // Stream<bool> approveBooking(String uid) {
+  //   bookingCollection.doc(uid).update({
+  //     "status": true,
+  //   });
+  //   return Stream.value(true);
+  // }
+
+  Future<bool> approveBooking(String uid) async {
     bookingCollection.doc(uid).update({
       "status": true,
     });
-    return Stream.value(true);
+    return true;
+  }
+
+  Future<bool> updateSeatNo(String driverID, int number) async {
+    await tricycleCollection.doc(uid).update({
+      "pass": number,
+    });
+    return true;
   }
 }
