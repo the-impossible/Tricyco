@@ -84,9 +84,11 @@ class HistoryPage extends StatelessWidget {
                                     fontSize: 16,
                                   ),
                                   subtitle: DelegatedText(
-                                      text: (bookingListData.status)
-                                          ? "Status: approved"
-                                          : "Status: pending",
+                                      text: (bookingListData.disapprove)
+                                          ? "Disapproved"
+                                          : (bookingListData.status)
+                                              ? "Approved"
+                                              : "Pending",
                                       fontSize: 14),
                                   trailing: const Icon(
                                       Icons.arrow_forward_ios_rounded),

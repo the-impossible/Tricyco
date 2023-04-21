@@ -4,22 +4,29 @@ import 'package:tricycle/components/delegatedSnackBar.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
 import 'package:tricycle/controllers/decideRoute.dart';
-import 'package:tricycle/routes/routes.dart';
 import 'package:tricycle/utils/constant.dart';
 import 'package:tricycle/utils/form_validators.dart';
 
-class DecideRoutePage extends StatelessWidget {
+class DecideRoutePage extends StatefulWidget {
   DecideRoutePage({super.key});
 
+  @override
+  State<DecideRoutePage> createState() => _DecideRoutePageState();
+}
+
+class _DecideRoutePageState extends State<DecideRoutePage> {
   DecideRouteController decideRouteController =
       Get.put(DecideRouteController());
 
   final _formKey = GlobalKey<FormState>();
+  String? seat;
+  double amount = 100;
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
-    print(Get.parameters['userID']);
-    print(Get.parameters['driverID']);
+    print("USER ID: ${Get.parameters['userID']}");
+    print("DRIVER ID ${Get.parameters['driverID']}");
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -71,7 +78,7 @@ class DecideRoutePage extends StatelessWidget {
                       ]),
                   margin:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                  height: size.height * .6,
+                  height: size.height * .7,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 30, vertical: 20),
@@ -97,6 +104,45 @@ class DecideRoutePage extends StatelessWidget {
                           const SizedBox(height: 20),
                           const ToDropdownMenu(),
                           const SizedBox(height: 70),
+                          DelegatedText(
+                            fontSize: 20,
+                            text: 'Number of Seat',
+                            color: Constants.tertiaryColor,
+                          ),
+                          const SizedBox(height: 20),
+                          DropdownButtonFormField<String>(
+                            validator: FormValidator.validateSeatNumber,
+                            decoration: const InputDecoration(
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Constants.primaryColor, width: 2),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  width: 2.0,
+                                  color: Constants.primaryColor,
+                                ),
+                              ),
+                            ),
+                            value: seat,
+                            hint: const Text('Select Numbers of Seat'),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                seat = newValue!;
+                                decideRouteController.seats =
+                                    int.parse(newValue);
+                                amount = int.parse(newValue) * 100;
+                              });
+                            },
+                            items: seats
+                                .map(
+                                  (e) => DropdownMenuItem<String>(
+                                    value: e.toString(),
+                                    child: Text(e.toString()),
+                                  ),
+                                )
+                                .toList(),
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -106,28 +152,28 @@ class DecideRoutePage extends StatelessWidget {
                                 fontName: 'InterBold',
                               ),
                               DelegatedText(
-                                text: "N100.00",
+                                text: "N$amount",
                                 fontSize: 20,
                                 fontName: 'InterBold',
                               ),
                             ],
                           ),
-                          const SizedBox(height: 70),
+                          const SizedBox(height: 30),
                           SizedBox(
                             width: size.width,
                             height: 50,
                             child: ElevatedButton(
                               onPressed: () {
-                                if (decideRouteController.from !=
-                                    decideRouteController.to) {
-                                  if (_formKey.currentState!.validate()) {
+                                if (_formKey.currentState!.validate()) {
+                                  if (decideRouteController.from !=
+                                      decideRouteController.to) {
                                     showDialog(
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(
                                           title: const Text('Payment Info'),
-                                          content: const Text(
-                                              'An amount of N100.00 will be charged from your wallet'),
+                                          content: Text(
+                                              'An amount of N$amount will be charged from your wallet'),
                                           actions: [
                                             TextButton(
                                               onPressed: () {
@@ -147,14 +193,14 @@ class DecideRoutePage extends StatelessWidget {
                                         );
                                       },
                                     );
+                                  } else {
+                                    ScaffoldMessenger.of(Get.context!)
+                                        .showSnackBar(
+                                      delegatedSnackBar(
+                                          "Current location and destination location can't be the same",
+                                          false),
+                                    );
                                   }
-                                } else {
-                                  ScaffoldMessenger.of(Get.context!)
-                                      .showSnackBar(
-                                    delegatedSnackBar(
-                                        "Current location and destination location can't be the same",
-                                        false),
-                                  );
                                 }
                               },
                               style: ElevatedButton.styleFrom(
@@ -190,6 +236,13 @@ List<String> locations = [
   'Main Gate',
   'Staff Gate',
   'Library'
+];
+
+List<int> seats = [
+  1,
+  2,
+  3,
+  4,
 ];
 
 class FromDropdownMenu extends StatefulWidget {
@@ -287,3 +340,52 @@ class _ToDropdownMenuState extends State<ToDropdownMenu> {
     );
   }
 }
+
+// class SeatDropdownMenu extends StatefulWidget {
+//   const SeatDropdownMenu({super.key});
+
+//   @override
+//   State<SeatDropdownMenu> createState() => _SeatDropdownMenuState();
+// }
+
+// class _SeatDropdownMenuState extends State<SeatDropdownMenu> {
+//   DecideRouteController decideRouteController =
+//       Get.put(DecideRouteController());
+
+//   @override
+//   Widget build(BuildContext context) {
+//     String? seat;
+
+//     return DropdownButtonFormField<String>(
+//       validator: FormValidator.validateLocation,
+//       decoration: const InputDecoration(
+//         enabledBorder: OutlineInputBorder(
+//           borderSide: BorderSide(color: Constants.primaryColor, width: 2),
+//         ),
+//         focusedBorder: OutlineInputBorder(
+//           borderSide: BorderSide(
+//             width: 2.0,
+//             color: Constants.primaryColor,
+//           ),
+//         ),
+//       ),
+//       value: seat,
+//       hint: const Text('Select Numbers of Seat'),
+//       onChanged: (String? newValue) {
+//         setState(() {
+//           seat = newValue!;
+//           decideRouteController.seats = int.parse(newValue);
+//           amount = int.parse(newValue) * 100;
+//         });
+//       },
+//       items: seats
+//           .map(
+//             (e) => DropdownMenuItem<String>(
+//               value: e.toString(),
+//               child: Text(e.toString()),
+//             ),
+//           )
+//           .toList(),
+//     );
+//   }
+// }

@@ -96,15 +96,17 @@ class DatabaseService extends GetxController {
     return null;
   }
 
-  Future<String> bookTricycle(
-      String? userID, String? driverID, String to, String from) async {
+  Future<String> bookTricycle(String? userID, String? driverID, String to,
+      String from, int seats) async {
     final docRef = await bookingCollection.add({
       'userID': userID,
       'driverID': driverID,
       'to': to,
       'from': from,
       'status': false,
+      'seats': seats,
       'hasCompleted': false,
+      'disapprove': false,
       'created': FieldValue.serverTimestamp()
     });
     return docRef.id;
@@ -130,6 +132,15 @@ class DatabaseService extends GetxController {
           (snapshot) =>
               snapshot.docs.map((doc) => BookingList.fromJson(doc)).toList(),
         );
+  }
+
+  Future<QuerySnapshot<Map<String, dynamic>>> getUserPendingBookings(
+      String? uid) {
+    return bookingCollection
+        .where('userID', isEqualTo: uid)
+        .where('status', isEqualTo: false)
+        .where('disapprove', isEqualTo: false)
+        .get();
   }
 
   Stream<WalletData?> getBalance(String uid) {
@@ -238,16 +249,16 @@ class DatabaseService extends GetxController {
     return null;
   }
 
-  // Stream<bool> approveBooking(String uid) {
-  //   bookingCollection.doc(uid).update({
-  //     "status": true,
-  //   });
-  //   return Stream.value(true);
-  // }
-
   Future<bool> approveBooking(String uid) async {
     bookingCollection.doc(uid).update({
       "status": true,
+    });
+    return true;
+  }
+
+  Future<bool> disapproveBooking(String uid) async {
+    bookingCollection.doc(uid).update({
+      "disapprove": true,
     });
     return true;
   }
@@ -257,5 +268,14 @@ class DatabaseService extends GetxController {
       "pass": number,
     });
     return true;
+  }
+
+  Stream<TricycleData?> getSeats(String uid) {
+    return tricycleCollection.doc(uid).snapshots().map((snapshot) {
+      if (snapshot.exists) {
+        return TricycleData.fromMap(snapshot.data()!, snapshot.id);
+      }
+      return null;
+    });
   }
 }

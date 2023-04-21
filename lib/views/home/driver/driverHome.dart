@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
 import 'package:tricycle/models/bookingList_data.dart';
+import 'package:tricycle/models/tricycle_data.dart';
 import 'package:tricycle/models/user_data.dart';
 import 'package:tricycle/models/wallet_data.dart';
 import 'package:tricycle/routes/routes.dart';
@@ -97,21 +98,38 @@ class _DriverHomePageState extends State<DriverHomePage> {
                           color: Constants.primaryColor,
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Icon(
-                              Icons.local_taxi,
-                              size: 60,
-                              color: Constants.secondaryColor,
-                            ),
-                            DelegatedText(
-                              text: '50 Ride \nCompleted',
-                              fontSize: 25,
-                              align: TextAlign.center,
-                              color: Constants.secondaryColor,
-                            ),
-                          ],
+                        child: StreamBuilder<TricycleData?>(
+                          stream: databaseService
+                              .getSeats(FirebaseAuth.instance.currentUser!.uid),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return Text(
+                                  "Something went wrong! ${snapshot.error}");
+                            } else if (snapshot.hasData) {
+                              return Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const Icon(
+                                    Icons.local_taxi,
+                                    size: 60,
+                                    color: Constants.secondaryColor,
+                                  ),
+                                  DelegatedText(
+                                    text:
+                                        '${snapshot.data!.pass} Seat \nRemaining',
+                                    fontSize: 25,
+                                    align: TextAlign.center,
+                                    color: Constants.secondaryColor,
+                                  ),
+                                ],
+                              );
+                            } else {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -220,10 +238,29 @@ class _DriverHomePageState extends State<DriverHomePage> {
                                                   text:
                                                       "${bookingData.from} - ${bookingData.to}",
                                                   fontSize: 14),
-                                              trailing: const Icon(
-                                                Icons.arrow_forward_ios_rounded,
-                                                size: 30,
-                                                color: Constants.secondaryColor,
+                                              trailing: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  CircleAvatar(
+                                                    maxRadius: 15,
+                                                    backgroundColor: Constants
+                                                        .secondaryColor,
+                                                    child: DelegatedText(
+                                                      text:
+                                                          "${bookingData.seats}",
+                                                      fontSize: 20,
+                                                      color: Constants
+                                                          .primaryColor,
+                                                    ),
+                                                  ),
+                                                  const Icon(
+                                                    Icons
+                                                        .arrow_forward_ios_rounded,
+                                                    size: 30,
+                                                    color: Constants
+                                                        .secondaryColor,
+                                                  )
+                                                ],
                                               ),
                                             );
                                           } else {

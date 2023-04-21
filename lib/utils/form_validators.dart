@@ -56,6 +56,12 @@ class FormValidator {
     }
     return null;
   }
+  static String? validateSeatNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Seat Number is Required!';
+    }
+    return null;
+  }
 
   static String? validatePlateNumber(String? value) {
     if (value == null || value.isEmpty) {

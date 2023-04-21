@@ -140,8 +140,33 @@ class Bookings extends StatelessWidget {
                                                           text:
                                                               "Destination: ${bookingData.to}",
                                                           fontSize: 12),
-                                                      trailing: const Icon(Icons
-                                                          .arrow_forward_ios_rounded),
+                                                      trailing: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          CircleAvatar(
+                                                            maxRadius: 12,
+                                                            backgroundColor:
+                                                                Constants
+                                                                    .primaryColor,
+                                                            child:
+                                                                DelegatedText(
+                                                              text:
+                                                                  "${bookingData.seats}",
+                                                              fontSize: 17,
+                                                              color: Constants
+                                                                  .secondaryColor,
+                                                            ),
+                                                          ),
+                                                          const Icon(
+                                                            Icons
+                                                                .arrow_forward_ios_rounded,
+                                                            size: 30,
+                                                            color: Constants
+                                                                .primaryColor,
+                                                          )
+                                                        ],
+                                                      ),
                                                     );
                                                   } else {
                                                     return const Center(
@@ -222,8 +247,33 @@ class Bookings extends StatelessWidget {
                                                           text:
                                                               "Destination: ${bookingData.to}",
                                                           fontSize: 12),
-                                                      trailing: const Icon(Icons
-                                                          .arrow_forward_ios_rounded),
+                                                      trailing: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          CircleAvatar(
+                                                            maxRadius: 12,
+                                                            backgroundColor:
+                                                                Constants
+                                                                    .primaryColor,
+                                                            child:
+                                                                DelegatedText(
+                                                              text:
+                                                                  "${bookingData.seats}",
+                                                              fontSize: 17,
+                                                              color: Constants
+                                                                  .secondaryColor,
+                                                            ),
+                                                          ),
+                                                          const Icon(
+                                                            Icons
+                                                                .arrow_forward_ios_rounded,
+                                                            size: 30,
+                                                            color: Constants
+                                                                .primaryColor,
+                                                          )
+                                                        ],
+                                                      ),
                                                     );
                                                   } else {
                                                     return const Center(
