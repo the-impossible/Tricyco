@@ -112,7 +112,14 @@ class _HomePageState extends State<HomePage> {
                                   },
                                 );
                               } else {
-                                return const Text("No available KEKE");
+                                return Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 18.0),
+                                    child: DelegatedText(
+                                        text: "No available Tricycle",
+                                        fontSize: 20),
+                                  ),
+                                );
                               }
                             } else {
                               return const Center(

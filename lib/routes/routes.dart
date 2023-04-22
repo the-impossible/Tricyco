@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:tricycle/views/home/driver/BookingList.dart';
-import 'package:tricycle/views/home/driver/bookingStatus.dart';
+import 'package:tricycle/views/home/driver/bookingConfirmation.dart';
 import 'package:tricycle/views/home/driver/driverHome.dart';
 import 'package:tricycle/views/home/driver/wallet.dart';
 import 'package:tricycle/views/home/users/bookingStatus.dart';
@@ -28,7 +28,8 @@ class Routes {
   // Driver Pages
   static String driverHomePage = '/driverHomePage';
   static String bookingList = '/bookingList';
-  static String driverBookingStatus = '/driverBookingStatus';
+  static String driverBookingConfirmationPage =
+      '/driverBookingConfirmationPage';
   static String driverWallet = '/driverWallet';
 }
 
@@ -45,7 +46,7 @@ final getPages = [
   ),
   GetPage(
     name: Routes.wrapper,
-    page: () => Wrapper(),
+    page: () => const Wrapper(),
   ),
   GetPage(
     name: Routes.decideRoute,
@@ -73,15 +74,15 @@ final getPages = [
   ),
   GetPage(
     name: Routes.driverHomePage,
-    page: () => DriverHomePage(),
+    page: () => const DriverHomePage(),
   ),
   GetPage(
     name: Routes.bookingList,
     page: () => Bookings(),
   ),
   GetPage(
-    name: Routes.driverBookingStatus,
-    page: () => DriverBookingStatusPage(),
+    name: Routes.driverBookingConfirmationPage,
+    page: () => DriverBookingConfirmationPage(),
   ),
   GetPage(
     name: Routes.driverWallet,

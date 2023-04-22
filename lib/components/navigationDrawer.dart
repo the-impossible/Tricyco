@@ -215,6 +215,13 @@ Widget buildMenuItems(BuildContext context) {
                     Navigator.pop(context);
                     Get.toNamed(Routes.bookingList);
                   }),
+              ListTile(
+                  leading: const Icon(Icons.fork_right_outlined),
+                  title: const Text('Current Ride'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Get.toNamed(Routes.driverBookingConfirmationPage);
+                  }),
               const Divider(
                 color: Colors.black54,
                 thickness: 1,

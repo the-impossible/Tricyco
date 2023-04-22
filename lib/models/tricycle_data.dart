@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TricycleData {
@@ -8,6 +7,7 @@ class TricycleData {
   final String plateNumber;
   final int pass;
   final bool status;
+  final bool hasStarted;
 
   TricycleData({
     required this.id,
@@ -15,6 +15,7 @@ class TricycleData {
     required this.plateNumber,
     required this.pass,
     required this.status,
+    required this.hasStarted,
   });
 
   factory TricycleData.fromJson(DocumentSnapshot snapshot) {
@@ -24,6 +25,7 @@ class TricycleData {
       plateNumber: snapshot['plateNumber'],
       pass: snapshot['pass'],
       status: snapshot['status'],
+      hasStarted: snapshot['hasStarted'],
     );
   }
 
@@ -34,12 +36,10 @@ class TricycleData {
       plateNumber: map['plateNumber'],
       pass: map['pass'],
       status: map['status'],
+      hasStarted: map['hasStarted'],
     );
   }
-
 }
 
-  TricycleData tricycleDataFromJson(String str) =>
+TricycleData tricycleDataFromJson(String str) =>
     TricycleData.fromJson(json.decode(str));
-
-

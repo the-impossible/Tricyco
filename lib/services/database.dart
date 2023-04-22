@@ -207,6 +207,7 @@ class DatabaseService extends GetxController {
     return bookingCollection
         .where('driverID', isEqualTo: uid)
         .where("status", isEqualTo: false)
+        .where("disapprove", isEqualTo: false)
         .orderBy('created', descending: true)
         .snapshots()
         .map(
@@ -231,12 +232,130 @@ class DatabaseService extends GetxController {
     return bookingCollection
         .where('driverID', isEqualTo: uid)
         .where('status', isEqualTo: true)
+        .where('hasCompleted', isEqualTo: false)
         .orderBy('created', descending: true)
         .snapshots()
         .map(
           (snapshot) =>
               snapshot.docs.map((doc) => BookingList.fromJson(doc)).toList(),
         );
+  }
+
+  Stream<TricycleData?> getRideStatus(String? uid) {
+    return tricycleCollection.doc(uid).snapshots().map(
+      (snapshot) {
+        if (snapshot.exists) {
+          return TricycleData.fromMap(snapshot.data()!, snapshot.id);
+        }
+        return null;
+      },
+    );
+  }
+
+  Future<bool> startRide(String? uid) async {
+    try {
+      // Get bookings where the status is pending
+      final snapshot = await bookingCollection
+          .where('driverID', isEqualTo: uid)
+          .where('status', isEqualTo: false)
+          .where('disapprove', isEqualTo: false)
+          .get();
+
+      final results = await Future.wait(snapshot.docs.map((doc) async {
+        //Disapprove other bookings
+        await bookingCollection.doc(doc.id).update({
+          "disapprove": true,
+        });
+      }).toList());
+
+      // update tricycleDetails
+      await tricycleCollection.doc(uid).update({
+        "hasStarted": true,
+        "status": false,
+      });
+
+      // Check if all operations were successful
+      final isSuccess = !results.contains(false);
+      return isSuccess;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> completeRide(String? uid) async {
+    try {
+      final snapshot = await bookingCollection
+          .where('driverID', isEqualTo: uid)
+          .where('status', isEqualTo: true)
+          .where('hasCompleted', isEqualTo: false)
+          .orderBy('created', descending: true)
+          .get();
+
+      final results = await Future.wait(snapshot.docs.map((doc) async {
+        int amount = doc['seats'] * 100;
+        dynamic userBalance;
+        dynamic driverBalance;
+
+        // Get user balance
+        final userSnapshot = await walletCollection.doc(doc['userID']).get();
+        if (userSnapshot.exists) {
+          var wallet = WalletData.fromJson(
+            userSnapshot.data()!,
+          );
+          userBalance = wallet.balance;
+        }
+        // Get driver balance
+        final driverSnapshot =
+            await walletCollection.doc(doc['driverID']).get();
+        if (driverSnapshot.exists) {
+          var wallet = WalletData.fromJson(
+            driverSnapshot.data()!,
+          );
+          driverBalance = wallet.balance;
+        }
+
+        // Make calculations
+        final currentUserBalance = userBalance - amount;
+        final currentDriverBalance = driverBalance + amount;
+
+        if (driverBalance != null && userBalance != null) {
+          if (currentUserBalance >= 0) {
+            //Deduce user balance
+            await walletCollection.doc(doc['userID']).update({
+              "balance": currentUserBalance,
+            });
+
+            //Increase driver balance
+            await walletCollection.doc(doc['driverID']).update({
+              "balance": currentDriverBalance,
+            });
+          } else {
+            return false;
+          }
+        } else {
+          return false;
+        }
+
+        //complete other bookings
+        await bookingCollection.doc(doc.id).update({
+          "hasCompleted": true,
+        });
+      }).toList());
+
+      // Check if all operations were successful
+      final isSuccess = !results.contains(false);
+
+      // update tricycleDetails
+      await tricycleCollection.doc(uid).update({
+        "hasStarted": false,
+        "status": true,
+        "pass": 4,
+      });
+
+      return isSuccess;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future<int?> getPassNumber(String driverID) async {
