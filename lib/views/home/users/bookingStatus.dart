@@ -164,9 +164,11 @@ class BookingStatusPage extends StatelessWidget {
                                 fontSize: 17,
                                 text: (snapshot.data!.disapprove)
                                     ? "Your ride has been canceled"
-                                    : (snapshot.data!.status)
-                                        ? "Your ride will start soon"
-                                        : "Your ride is pending approval",
+                                    : (snapshot.data!.hasCompleted)
+                                        ? "Your ride has Ended"
+                                        : (snapshot.data!.status)
+                                            ? "Your ride will start soon"
+                                            : "Your ride is pending approval",
                                 color: Constants.tertiaryColor,
                               ),
                               const SizedBox(height: 30),
