@@ -222,8 +222,10 @@ class BookingStatusPage extends StatelessWidget {
                                               if (snapshot.data!.status !=
                                                   true) {
                                                 approveBookingController
-                                                    .approveStatus(Get
-                                                        .parameters['docRef']!);
+                                                    .approveStatus(
+                                                        Get.parameters[
+                                                            'docRef']!,
+                                                        snapshot.data!.userID);
                                               } else {
                                                 ScaffoldMessenger.of(
                                                         Get.context!)

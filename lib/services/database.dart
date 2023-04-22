@@ -312,26 +312,6 @@ class DatabaseService extends GetxController {
 
         driverPayment += amount;
 
-        dynamic userBalance;
-
-        // Get user balance
-        final userSnapshot = await walletCollection.doc(doc['userID']).get();
-
-        if (userSnapshot.exists) {
-          var wallet = WalletData.fromJson(
-            userSnapshot.data()!,
-          );
-          userBalance = wallet.balance;
-        }
-
-        // Make calculations
-        final currentUserBalance = userBalance - amount;
-
-        //Deduce user balance
-        await walletCollection.doc(doc['userID']).update({
-          "balance": currentUserBalance,
-        });
-
         //complete other bookings
         await bookingCollection.doc(doc.id).update({
           "hasCompleted": true,
@@ -392,10 +372,39 @@ class DatabaseService extends GetxController {
     return false;
   }
 
-  Future<bool> approveBooking(String uid) async {
-    bookingCollection.doc(uid).update({
+  Future<bool> approveBooking(String bookingID, String userID) async {
+    bookingCollection.doc(bookingID).update({
       "status": true,
     });
+
+    dynamic amount;
+
+    final booking = await bookingCollection.doc(bookingID).get();
+    if (booking.exists) {
+      final data = booking.data()!;
+      amount = data['seats'] * Constants.amount;
+    }
+
+    dynamic userBalance;
+
+    // Get user balance
+    final userSnapshot = await walletCollection.doc(userID).get();
+
+    if (userSnapshot.exists) {
+      var wallet = WalletData.fromJson(
+        userSnapshot.data()!,
+      );
+      userBalance = wallet.balance;
+    }
+
+    // Make calculations
+    final currentUserBalance = userBalance - amount;
+
+    //Deduce user balance
+    await walletCollection.doc(userID).update({
+      "balance": currentUserBalance,
+    });
+
     return true;
   }
 

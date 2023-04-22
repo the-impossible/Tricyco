@@ -9,7 +9,7 @@ class ApproveBookingController extends GetxController {
 
   int seats = 1;
 
-  Future<void> approveStatus(String bookingID) async {
+  Future<void> approveStatus(String bookingID, String userID) async {
     showDialog(
       context: Get.context!,
       barrierDismissible: false,
@@ -25,7 +25,7 @@ class ApproveBookingController extends GetxController {
       bool seatSuccess = await databaseService.updateSeatNo(
           FirebaseAuth.instance.currentUser!.uid, pass - seats);
 
-      bool bookingSuccess = await databaseService.approveBooking(bookingID);
+      bool bookingSuccess = await databaseService.approveBooking(bookingID, userID);
 
       if (seatSuccess && bookingSuccess) {
         navigator!.pop(Get.context!);

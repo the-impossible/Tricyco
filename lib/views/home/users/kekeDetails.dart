@@ -74,7 +74,7 @@ class KekeDetailsPage extends StatelessWidget {
                     children: [
                       StreamBuilder<String?>(
                           stream: databaseService
-                              .getImage(FirebaseAuth.instance.currentUser!.uid),
+                              .getImage(tricycleDetailsController.driverID),
                           builder: (context, snapshot) {
                             if (snapshot.hasError) {
                               return Text(
