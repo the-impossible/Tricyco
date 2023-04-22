@@ -162,6 +162,7 @@ class _WalletPageState extends State<WalletPage> {
                             fieldName: 'Amount',
                             icon: Icons.monetization_on,
                             hintText: 'Enter the Amount',
+                            isSecured: false,
                             formController: walletController.amountController,
                             validator: FormValidator.fundWallet,
                           ),

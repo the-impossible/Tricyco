@@ -6,6 +6,7 @@ class delegatedForm extends StatefulWidget {
   final String fieldName;
   final IconData icon;
   final String hintText;
+  final bool isSecured;
   final TextEditingController? formController;
   final String? Function(String?)? validator;
 
@@ -13,6 +14,7 @@ class delegatedForm extends StatefulWidget {
     required this.fieldName,
     required this.icon,
     required this.hintText,
+    required this.isSecured,
     this.formController,
     this.validator,
     Key? key,
@@ -46,6 +48,7 @@ class _delegatedFormState extends State<delegatedForm> {
         Padding(
           padding: const EdgeInsets.only(top: 12, bottom: 12),
           child: TextFormField(
+            obscureText: widget.isSecured,
             validator: widget.validator,
             controller: widget.formController,
             style: const TextStyle(

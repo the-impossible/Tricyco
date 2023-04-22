@@ -36,12 +36,16 @@ class _UpdateTricycleFormState extends State<UpdateTricycleForm> {
               icon: Icons.numbers,
               hintText: "Enter plate Number",
               validator: FormValidator.validatePlateNumber,
+                    isSecured: false,
+
               formController: tricycleDataController.plateNumberController,
             ),
             delegatedForm(
               fieldName: "Tricycle Color",
               icon: Icons.numbers,
               hintText: "Enter tricycle color",
+                    isSecured: false,
+
               validator: FormValidator.validateTricycleColor,
               formController: tricycleDataController.tricycleColorController,
             ),

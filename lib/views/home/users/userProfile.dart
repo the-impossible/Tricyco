@@ -165,6 +165,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   fieldName: 'Full name',
                                   icon: Icons.person,
                                   hintText: 'Enter full name',
+                                  isSecured: false,
                                   validator: FormValidator.validateName,
                                   formController:
                                       profileController.nameController,
@@ -174,6 +175,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 fieldName: 'Email',
                                 icon: Icons.mail,
                                 hintText: 'Enter Email',
+                                isSecured: false,
                                 validator: FormValidator.validateEmail,
                                 formController:
                                     profileController.emailController,
@@ -181,6 +183,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               delegatedForm(
                                 fieldName: 'Phone number',
                                 icon: Icons.call,
+                                isSecured: false,
+
                                 hintText: 'Enter phone number',
                                 validator: FormValidator.validatePhone,
                                 formController:

@@ -163,6 +163,8 @@ class _DriverWalletState extends State<DriverWallet> {
                             fieldName: 'Amount',
                             icon: Icons.monetization_on,
                             hintText: 'Enter the Amount',
+                    isSecured: false,
+
                             validator: FormValidator.disburseFunds,
                             formController:
                                 driverWalletController.amountController,
@@ -171,6 +173,8 @@ class _DriverWalletState extends State<DriverWallet> {
                             fieldName: 'Account Number',
                             icon: Icons.numbers,
                             hintText: 'Enter Account Number',
+                    isSecured: false,
+
                             validator: FormValidator.validateAccountNumber,
                             formController:
                                 driverWalletController.accountController,

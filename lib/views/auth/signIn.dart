@@ -55,11 +55,13 @@ class _SignInState extends State<SignIn> {
                     icon: Icons.mail_rounded,
                     hintText: 'Enter your email',
                     formController: loginController.emailController,
+                    isSecured: false,
                   ),
                   delegatedForm(
                     fieldName: 'Password',
                     icon: Icons.lock,
                     hintText: 'Enter your password',
+                    isSecured: true,
                     formController: loginController.passwordController,
                   ),
                   Padding(
