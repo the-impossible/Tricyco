@@ -20,13 +20,12 @@ class _DecideRoutePageState extends State<DecideRoutePage> {
 
   final _formKey = GlobalKey<FormState>();
   String? seat;
-  double amount = 100;
+  double amount = Constants.amount;
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    print("USER ID: ${Get.parameters['userID']}");
-    print("DRIVER ID ${Get.parameters['driverID']}");
+
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -131,7 +130,7 @@ class _DecideRoutePageState extends State<DecideRoutePage> {
                                 seat = newValue!;
                                 decideRouteController.seats =
                                     int.parse(newValue);
-                                amount = int.parse(newValue) * 100;
+                                amount = int.parse(newValue) * Constants.amount;
                               });
                             },
                             items: seats
@@ -341,51 +340,3 @@ class _ToDropdownMenuState extends State<ToDropdownMenu> {
   }
 }
 
-// class SeatDropdownMenu extends StatefulWidget {
-//   const SeatDropdownMenu({super.key});
-
-//   @override
-//   State<SeatDropdownMenu> createState() => _SeatDropdownMenuState();
-// }
-
-// class _SeatDropdownMenuState extends State<SeatDropdownMenu> {
-//   DecideRouteController decideRouteController =
-//       Get.put(DecideRouteController());
-
-//   @override
-//   Widget build(BuildContext context) {
-//     String? seat;
-
-//     return DropdownButtonFormField<String>(
-//       validator: FormValidator.validateLocation,
-//       decoration: const InputDecoration(
-//         enabledBorder: OutlineInputBorder(
-//           borderSide: BorderSide(color: Constants.primaryColor, width: 2),
-//         ),
-//         focusedBorder: OutlineInputBorder(
-//           borderSide: BorderSide(
-//             width: 2.0,
-//             color: Constants.primaryColor,
-//           ),
-//         ),
-//       ),
-//       value: seat,
-//       hint: const Text('Select Numbers of Seat'),
-//       onChanged: (String? newValue) {
-//         setState(() {
-//           seat = newValue!;
-//           decideRouteController.seats = int.parse(newValue);
-//           amount = int.parse(newValue) * 100;
-//         });
-//       },
-//       items: seats
-//           .map(
-//             (e) => DropdownMenuItem<String>(
-//               value: e.toString(),
-//               child: Text(e.toString()),
-//             ),
-//           )
-//           .toList(),
-//     );
-//   }
-// }

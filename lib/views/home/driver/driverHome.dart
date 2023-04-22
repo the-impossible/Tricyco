@@ -89,7 +89,7 @@ class _DriverHomePageState extends State<DriverHomePage> {
                   children: [
                     InkWell(
                       onTap: () {
-                        Get.toNamed(Routes.bookingList);
+                        Get.toNamed(Routes.driverBookingConfirmationPage);
                       },
                       child: Container(
                         height: 200,

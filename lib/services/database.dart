@@ -10,6 +10,7 @@ import 'package:tricycle/models/tricycle_data.dart';
 import 'package:tricycle/models/user_data.dart';
 import 'package:tricycle/models/wallet_data.dart';
 import 'package:flutter/services.dart';
+import 'package:tricycle/utils/constant.dart';
 
 class DatabaseService extends GetxController {
   String? uid;
@@ -220,6 +221,7 @@ class DatabaseService extends GetxController {
     return bookingCollection
         .where('driverID', isEqualTo: uid)
         .where('status', isEqualTo: false)
+        .where('disapproved', isEqualTo: false)
         .orderBy('created', descending: true)
         .snapshots()
         .map(
@@ -233,6 +235,7 @@ class DatabaseService extends GetxController {
         .where('driverID', isEqualTo: uid)
         .where('status', isEqualTo: true)
         .where('hasCompleted', isEqualTo: false)
+        .where('disapprove', isEqualTo: false)
         .orderBy('created', descending: true)
         .snapshots()
         .map(
@@ -291,56 +294,57 @@ class DatabaseService extends GetxController {
           .orderBy('created', descending: true)
           .get();
 
+      dynamic driverPayment = 0;
+      dynamic driverBalance = 0;
+      String driverID = "";
+
       final results = await Future.wait(snapshot.docs.map((doc) async {
-        int amount = doc['seats'] * 100;
+        dynamic amount = doc['seats'] * Constants.amount;
+
+        driverID = doc['driverID'];
+
+        driverPayment += amount;
+
         dynamic userBalance;
-        dynamic driverBalance;
 
         // Get user balance
         final userSnapshot = await walletCollection.doc(doc['userID']).get();
+
         if (userSnapshot.exists) {
           var wallet = WalletData.fromJson(
             userSnapshot.data()!,
           );
           userBalance = wallet.balance;
         }
-        // Get driver balance
-        final driverSnapshot =
-            await walletCollection.doc(doc['driverID']).get();
-        if (driverSnapshot.exists) {
-          var wallet = WalletData.fromJson(
-            driverSnapshot.data()!,
-          );
-          driverBalance = wallet.balance;
-        }
 
         // Make calculations
         final currentUserBalance = userBalance - amount;
-        final currentDriverBalance = driverBalance + amount;
 
-        if (driverBalance != null && userBalance != null) {
-          if (currentUserBalance >= 0) {
-            //Deduce user balance
-            await walletCollection.doc(doc['userID']).update({
-              "balance": currentUserBalance,
-            });
-
-            //Increase driver balance
-            await walletCollection.doc(doc['driverID']).update({
-              "balance": currentDriverBalance,
-            });
-          } else {
-            return false;
-          }
-        } else {
-          return false;
-        }
+        //Deduce user balance
+        await walletCollection.doc(doc['userID']).update({
+          "balance": currentUserBalance,
+        });
 
         //complete other bookings
         await bookingCollection.doc(doc.id).update({
           "hasCompleted": true,
         });
       }).toList());
+
+      // Get driver balance
+      final driverSnapshot = await walletCollection.doc(driverID).get();
+      if (driverSnapshot.exists) {
+        var wallet = WalletData.fromJson(
+          driverSnapshot.data()!,
+        );
+        driverBalance = wallet.balance;
+        final currentDriverBalance = driverBalance + driverPayment;
+
+        //Increase driver balance
+        await walletCollection.doc(driverID).update({
+          "balance": currentDriverBalance,
+        });
+      }
 
       // Check if all operations were successful
       final isSuccess = !results.contains(false);
@@ -366,6 +370,19 @@ class DatabaseService extends GetxController {
       return pass;
     }
     return null;
+  }
+
+  Future<bool> hasBalance(String userID, dynamic amount) async {
+    final userSnapshot = await walletCollection.doc(userID).get();
+    if (userSnapshot.exists) {
+      var wallet = WalletData.fromJson(
+        userSnapshot.data()!,
+      );
+      if (wallet.balance >= amount) {
+        return true;
+      }
+    }
+    return false;
   }
 
   Future<bool> approveBooking(String uid) async {

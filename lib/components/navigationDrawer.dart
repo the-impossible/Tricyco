@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedSnackBar.dart';
 import 'package:tricycle/components/delegatedText.dart';
+import 'package:tricycle/controllers/logoutController.dart';
 import 'package:tricycle/models/user_data.dart';
 import 'package:tricycle/routes/routes.dart';
 import 'package:tricycle/services/database.dart';
@@ -117,6 +118,7 @@ Widget buildHeader(BuildContext context) {
 
 Widget buildMenuItems(BuildContext context) {
   DatabaseService databaseService = Get.put(DatabaseService());
+
   return Container(
     padding: const EdgeInsets.all(15),
     child: Wrap(
@@ -179,10 +181,9 @@ Widget buildMenuItems(BuildContext context) {
                             onPressed: () {
                               Navigator.pop(context);
                               Navigator.pop(context);
-                              ScaffoldMessenger.of(Get.context!).showSnackBar(
-                                  delegatedSnackBar(
-                                      "You are now logout", true));
-                              FirebaseAuth.instance.signOut();
+                              LogoutController logoutController =
+                                  Get.put(LogoutController());
+                              logoutController.signOut();
                             },
                             child: const Text('Logout'),
                           ),
@@ -248,10 +249,9 @@ Widget buildMenuItems(BuildContext context) {
                             onPressed: () {
                               Navigator.pop(context);
                               Navigator.pop(context);
-                              ScaffoldMessenger.of(Get.context!).showSnackBar(
-                                  delegatedSnackBar(
-                                      "You are now logout", true));
-                              FirebaseAuth.instance.signOut();
+                              LogoutController logoutController =
+                                  Get.put(LogoutController());
+                              logoutController.signOut();
                             },
                             child: const Text('Logout'),
                           ),
