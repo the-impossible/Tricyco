@@ -161,6 +161,13 @@ class DatabaseService extends GetxController {
     return true;
   }
 
+  Future<bool> disburseFunds(String uid, String amount) async {
+    walletCollection.doc(uid).update({
+      "balance": walletData!.balance - double.parse(amount),
+    });
+    return true;
+  }
+
   Stream<UserData?> getUserProfile(String uid) {
     return usersCollection.doc(uid).snapshots().map((snapshot) {
       if (snapshot.exists) {

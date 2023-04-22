@@ -1,16 +1,31 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedForm.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/components/navigationDrawer.dart';
-import 'package:tricycle/routes/routes.dart';
+import 'package:tricycle/controllers/driverWalletController.dart';
+import 'package:tricycle/models/wallet_data.dart';
+import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/constant.dart';
 import 'package:tricycle/utils/form_validators.dart';
 
-class DriverWallet extends StatelessWidget {
+class DriverWallet extends StatefulWidget {
   DriverWallet({super.key});
 
+  @override
+  State<DriverWallet> createState() => _DriverWalletState();
+}
+
+class _DriverWalletState extends State<DriverWallet> {
+  DatabaseService databaseService = Get.put(DatabaseService());
+  DriverWalletController driverWalletController =
+      Get.put(DriverWalletController());
+
   final scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -72,10 +87,25 @@ class DriverWallet extends StatelessWidget {
                                 fontSize: 20,
                                 fontName: 'InterMed',
                               ),
-                              DelegatedText(
-                                text: 'N2000:00',
-                                fontSize: 22,
-                                fontName: 'InterBold',
+                              StreamBuilder<WalletData?>(
+                                stream: databaseService.getBalance(
+                                    FirebaseAuth.instance.currentUser!.uid),
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError) {
+                                    return Text(
+                                        "Something went wrong! ${snapshot.error}");
+                                  } else if (snapshot.hasData) {
+                                    return DelegatedText(
+                                      text: 'N${snapshot.data!.balance}',
+                                      fontSize: 22,
+                                      fontName: 'InterBold',
+                                    );
+                                  } else {
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  }
+                                },
                               )
                             ],
                           ),
@@ -123,46 +153,59 @@ class DriverWallet extends StatelessWidget {
                       horizontal: 20,
                       vertical: 20,
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        DelegatedText(text: 'Disburse Funds', fontSize: 18),
-                        const delegatedForm(
-                          fieldName: 'Amount',
-                          icon: Icons.monetization_on,
-                          hintText: 'Enter the Amount',
-                        ),
-                        const delegatedForm(
-                          fieldName: 'Account Number',
-                          icon: Icons.numbers,
-                          hintText: 'Enter Account Number',
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.only(top: 10.0),
-                          child: BankNamesDropdownMenu(),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20),
-                          child: SizedBox(
-                            width: size.width,
-                            height: 60,
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                primary: Constants.secondaryColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          DelegatedText(text: 'Disburse Funds', fontSize: 18),
+                          delegatedForm(
+                            fieldName: 'Amount',
+                            icon: Icons.monetization_on,
+                            hintText: 'Enter the Amount',
+                            validator: FormValidator.disburseFunds,
+                            formController:
+                                driverWalletController.amountController,
+                          ),
+                          delegatedForm(
+                            fieldName: 'Account Number',
+                            icon: Icons.numbers,
+                            hintText: 'Enter Account Number',
+                            validator: FormValidator.validateAccountNumber,
+                            formController:
+                                driverWalletController.accountController,
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10.0),
+                            child: BankNamesDropdownMenu(),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: SizedBox(
+                              width: size.width,
+                              height: 60,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (_formKey.currentState!.validate()) {
+                                    driverWalletController.disburseFunds();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  primary: Constants.secondaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
                                 ),
-                              ),
-                              child: DelegatedText(
-                                fontSize: 20,
-                                text: 'Withdraw Funds',
-                                color: Constants.primaryColor,
+                                child: DelegatedText(
+                                  fontSize: 20,
+                                  text: 'Withdraw Funds',
+                                  color: Constants.primaryColor,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

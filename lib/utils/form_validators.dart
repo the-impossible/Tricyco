@@ -36,6 +36,15 @@ class FormValidator {
     return null;
   }
 
+  static String? validateAccountNumber(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Account number is Required!';
+    } else if (value.length != 10) {
+      return 'Invalid account number!';
+    }
+    return null;
+  }
+
   static String? validateUserType(String? value) {
     if (value == null || value.isEmpty) {
       return 'UserType is Required!';
@@ -45,7 +54,7 @@ class FormValidator {
 
   static String? validateBankNames(String? value) {
     if (value == null || value.isEmpty) {
-      return 'UserType is Required!';
+      return 'Bank Name is Required!';
     }
     return null;
   }
@@ -56,6 +65,7 @@ class FormValidator {
     }
     return null;
   }
+
   static String? validateSeatNumber(String? value) {
     if (value == null || value.isEmpty) {
       return 'Seat Number is Required!';
@@ -78,11 +88,21 @@ class FormValidator {
   }
 
   static String? fundWallet(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'amount is Required!';
+    }
     if (double.parse(value.toString()) < 1) {
       return 'amount should be a positive number!';
     }
+    return null;
+  }
+
+  static String? disburseFunds(String? value) {
     if (value == null || value.isEmpty) {
       return 'amount is Required!';
+    }
+    if (double.parse(value.toString()) < 499) {
+      return 'minimum withdrawal is 500';
     }
     return null;
   }
