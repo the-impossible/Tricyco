@@ -25,7 +25,6 @@ class _DecideRoutePageState extends State<DecideRoutePage> {
 
   @override
   Widget build(BuildContext context) {
-
     final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
@@ -273,7 +272,7 @@ class _FromDropdownMenuState extends State<FromDropdownMenu> {
         ),
       ),
       value: location,
-      hint: const Text('Select Current Location'),
+      hint: const Text('Select Current'),
       onChanged: (String? newValue) {
         setState(() {
           location = newValue!;
@@ -321,7 +320,7 @@ class _ToDropdownMenuState extends State<ToDropdownMenu> {
         ),
       ),
       value: location,
-      hint: const Text('Select Destination Location'),
+      hint: const Text('Select Destination'),
       onChanged: (String? newValue) {
         setState(() {
           location = newValue!;
@@ -339,4 +338,3 @@ class _ToDropdownMenuState extends State<ToDropdownMenu> {
     );
   }
 }
-

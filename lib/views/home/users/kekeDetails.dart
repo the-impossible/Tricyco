@@ -69,7 +69,7 @@ class KekeDetailsPage extends StatelessWidget {
                       ]),
                   margin:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                  height: size.height * .6,
+                  height: size.height * .65,
                   child: Column(
                     children: [
                       StreamBuilder<String?>(
