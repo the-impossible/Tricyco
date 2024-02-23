@@ -30,7 +30,7 @@ class _DecideRoutePageState extends State<DecideRoutePage> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Constants.secondaryColor,
-        drawer: const NavigationDrawer(),
+        drawer: const DelegatedNavigationDrawer(),
         body: Stack(
           children: [
             Image.asset(

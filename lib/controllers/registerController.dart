@@ -55,6 +55,7 @@ class RegisterController extends GetxController {
               "color": "Yellow",
               "pass": 4,
               "status": true,
+              "hasStarted": false,
             },
           );
         }

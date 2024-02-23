@@ -18,4 +18,5 @@ class UserData {
         phone: snapshot['phone'],
         userType: snapshot['userType']);
   }
+
 }

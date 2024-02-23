@@ -22,7 +22,7 @@ class HistoryPage extends StatelessWidget {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Constants.secondaryColor,
-        drawer: const NavigationDrawer(),
+        drawer: const DelegatedNavigationDrawer(),
         body: SingleChildScrollView(
           child: Column(
             children: [

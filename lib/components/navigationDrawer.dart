@@ -9,8 +9,8 @@ import 'package:tricycle/routes/routes.dart';
 import 'package:tricycle/services/database.dart';
 import 'package:tricycle/utils/constant.dart';
 
-class NavigationDrawer extends StatelessWidget {
-  const NavigationDrawer({super.key});
+class DelegatedNavigationDrawer extends StatelessWidget {
+  const DelegatedNavigationDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {

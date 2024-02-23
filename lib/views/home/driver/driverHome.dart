@@ -18,6 +18,7 @@ void showUpdateTricycle(BuildContext context) {
   showModalBottomSheet(
     isScrollControlled: true,
     isDismissible: false,
+    
     context: context,
     builder: (context) {
       return Padding(
@@ -68,7 +69,7 @@ class _DriverHomePageState extends State<DriverHomePage> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Constants.secondaryColor,
-        drawer: const NavigationDrawer(),
+        drawer: const DelegatedNavigationDrawer(),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Column(

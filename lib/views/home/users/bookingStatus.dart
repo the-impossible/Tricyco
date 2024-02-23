@@ -23,7 +23,7 @@ class BookingStatusPage extends StatelessWidget {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Constants.secondaryColor,
-        drawer: const NavigationDrawer(),
+        drawer: const DelegatedNavigationDrawer(),
         body: Stack(
           children: [
             Column(

@@ -33,7 +33,7 @@ class _DriverWalletState extends State<DriverWallet> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Constants.secondaryColor,
-        drawer: const NavigationDrawer(),
+        drawer: const DelegatedNavigationDrawer(),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),

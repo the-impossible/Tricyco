@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: Constants.secondaryColor,
-        drawer: const NavigationDrawer(),
+        drawer: const DelegatedNavigationDrawer(),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
