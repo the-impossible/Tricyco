@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tricycle/components/delegatedForm.dart';
+import 'package:tricycle/components/delegatedSnackBar.dart';
 import 'package:tricycle/components/delegatedText.dart';
 import 'package:tricycle/controllers/registerController.dart';
 import 'package:tricycle/routes/routes.dart';
@@ -63,6 +64,14 @@ class _SignUpState extends State<SignUp> {
                       validator: FormValidator.validatePassword,
                     ),
                     delegatedForm(
+                      fieldName: 'Confirm Password',
+                      icon: Icons.lock,
+                      hintText: 'Enter password again',
+                      isSecured: true,
+                      formController: registerController.password2Controller,
+                      validator: FormValidator.validatePassword,
+                    ),
+                    delegatedForm(
                       fieldName: 'Full name',
                       icon: Icons.person,
                       hintText: 'Enter your full name',
@@ -89,7 +98,15 @@ class _SignUpState extends State<SignUp> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            registerController.createAccount();
+                            if (registerController.passwordController.text !=
+                                registerController.password2Controller.text) {
+                              ScaffoldMessenger.of(Get.context!).showSnackBar(
+                                  delegatedSnackBar(
+                                      "Password and Confirm Password Mismatched!",
+                                      false));
+                            } else {
+                              registerController.createAccount();
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(

@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 class RegisterController extends GetxController {
   TextEditingController nameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController password2Controller = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
 
@@ -17,10 +18,10 @@ class RegisterController extends GetxController {
   @override
   void dispose() {
     // TODO: implement dispose
-    nameController.dispose();
-    phoneController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
+    nameController.clear();
+    phoneController.clear();
+    emailController.clear();
+    passwordController.clear();
     super.dispose();
   }
 
